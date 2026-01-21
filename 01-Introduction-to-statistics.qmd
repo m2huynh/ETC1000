@@ -1,0 +1,1057 @@
+---
+title: "Introduction to Statistics & Categorical Data"
+---
+
+```{r, include=FALSE}
+library(tidyverse)
+library(flextable)
+library(webexercises)
+```
+
+::: callout-note
+## Learning Objectives
+
+By the end of this chapter, you should be able to:
+
+1.  Define a variable and explain the difference between numerical and categorical data.
+2.  Identify whether a variable is numerical or categorical by considering its units of measurement.
+3.  Organise data into tabular format, where each row represents an observation and each column represents a variable.
+4.  Construct and interpret contingency tables to summarise relationships between two categorical variables.
+5.  Differentiate between types of probabilities — marginal, joint, and conditional — and calculate each using contingency tables.
+6.  Determine whether two variables are independent using conditional probabilities or the product rule
+7.  Explain the importance of correctly identifying variable types and relationships when choosing appropriate statistical methods.
+:::
+
+<center>
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Covers/cover1.png")
+```
+
+</center>
+
+## Why Statistics?
+
+One of the first questions I like to ask when I take on a new unit is:
+
+> *Why this unit*?
+
+In this case ... why is statistics a core part of your degree?
+
+For those majoring in econometrics or business analytics, the answer might seem obvious. But many of you come from other sub-disciplines—marketing, management, banking and finance, etc., — and yet, you're all required to study statistics.
+
+So what is it about statistics that makes it essential across so many fields? To answer this question, read the case study regarding the NASA Challenger Disaster below.
+
+::: callout-tip
+## The NASA Challenger disaster
+
+On January 28, 1986, the space shuttle **Challenger** broke apart just 73 seconds after liftoff, killing all seven astronauts on board. The tragedy remains one of the most devastating examples of how misunderstanding data and poor statistical reasoning can have fatal consequences.
+
+<center>![](https://taylorsciencegeeks.weebly.com/uploads/5/9/2/0/59201005/636772080.gif)</center>
+
+<br>
+
+Prior to the launch, engineers from Morton Thiokol, the contractor responsible for the shuttle’s O-ring seals, were concerned about the effects of cold temperature on the O-rings’ ability to prevent hot gases from escaping during launch. They had data from previous shuttle launches showing the number of O-ring failures (or "erosions") and the temperature at launch.
+
+```{r, include=FALSE}
+
+df_space <- 
+  data.frame(
+    x = c(53,56,57,63,70,75),
+    y = c(3,1,1,1,1,2)
+  )
+```
+
+```{r}
+df_space |> 
+  ggplot(aes(x,y)) +
+  theme_bw() +
+  geom_point(size = 3) +
+  ylim(0,4) +
+  scale_x_continuous(limits = c(50,80),
+                     breaks = seq(50,80, by = 5)) +
+  ylab("Number of Failures") +
+  xlab("Temperature (F) on launch day")
+```
+
+Unfortunately, when Thiokol engineers presented their findings to NASA, the data were plotted incorrectly. They graphed the number of O-ring failures only for the launches that had experienced a failure—completely omitting all the launches where there were *no* failures. This meant that the plot showed no clear pattern, appearing to suggest that O-ring performance was random and unrelated to temperature. If the engineers had instead plotted all launches—including those with zero O-ring problems—against temperature (see plot below), the relationship would have been obvious:
+
+> as the temperature dropped, the probability of O-ring failure increased sharply.
+
+```{r, include=FALSE}
+library(tidyverse)
+df_space2 <- 
+  data.frame(
+    x = c(53,56,57,63,70,75, 64,65,66,67,70,73,74,76,77,78,79),
+    y = c(3,1,1,1,1,2, 0,0,0,0,0,0,0,0,0,0,0)
+  )
+```
+
+```{r}
+df_space2 |> 
+  ggplot(aes(x,y)) +
+  theme_bw() +
+  geom_point(size = 3) +
+  ylim(0,4) +
+  scale_x_continuous(limits = c(50,80),
+                     breaks = seq(50,80, by = 5)) +
+  ylab("Number of Failures") +
+  xlab("Temperature (F) on launch day") +
+   geom_smooth(
+    method = "nls",
+    formula = y ~ a * exp(-b * x),
+    method.args = list(start = list(a = 3, b = 0.05)),
+    se = FALSE,
+    color = "blue"
+  )
+```
+
+The Challenger launch occurred at 51°F, far colder than any previous launch, placing it in the highest-risk zone of all.
+
+Despite engineers’ warnings and uncertainty, NASA decided to proceed with the launch under immense schedule and political pressure. The misunderstanding of the statistical evidence—and the lack of clear data visualization—played a major role in the decision. When the Challenger lifted off, the cold temperature caused one of the O-rings to fail, leading to the explosion that destroyed the shuttle.
+
+In short, if the data had been plotted correctly, the evidence against launching in such cold conditions would have been undeniable. Tragedy might have been averted through better understanding and communication of statistical relationships.
+:::
+
+So I come back to the question:
+
+> Why statistics?
+
+Not everyone here is going to work at NASA or be in a role where your decisions could cost lives.
+
+However, every one of you will be expected to make **decisions using data** — whether you're managing a budget, launching a product, analyzing customer feedback, or pitching a new strategy to stakeholders. Inaccurate assumptions, poor interpretation of trends, or blindly trusting a single number without questioning where it came from—these mistakes won’t make the news like the Challenger disaster did, but they can cost your company money, credibility, or opportunity. And more importantly, they can damage your own confidence and reputation as a professional.
+
+Statistics helps you avoid that. It teaches you not just how to calculate but how to think: how to challenge claims, test assumptions, and make sense of messy real-world data. That’s why this unit matters — not just for your degree, but for your ability to make smarter, more informed decisions, wherever your career takes you.
+
+## Let him cook
+
+> Statistics is a lot like cooking.
+
+Suppose I want to bake a cake for Mother’s Day.
+
+1.  First, I prepare the ingredients.
+2.  Then, I cook them — in this case, using an oven.
+3.  Finally, I (hopefully) end up with the desired end product: a cake.
+
+Now imagine that instead of using an oven, I decided to use a deep fryer. Would I still get a cake? Probably not! The same goes for using a steamer, a blender, or a grill — each appliance is designed for a specific purpose and produces a different result.
+
+To make a good cake, I need both the right ingredients and the right tool. Using the wrong one can lead to an unexpected or flawed outcome.
+
+![](images/01-01-cake.png)
+
+The same principle applies in statistics. Our tools are the various statistical tests and models available to us. Each is suited to a particular type of problem or research question. Our ingredients are the data we have — their type, structure, and quality.
+
+![](images/01-02-cake-stats.png)
+
+If we use the wrong statistical tool for the data at hand, our results may be misleading or invalid, just like trying to bake a cake in a deep fryer.
+
+### The Ingredients: Variables
+
+In statistics, our ingredients are called **variables**. A variable is simply something that can vary — it can take on different values across people, objects, or situations. For example,
+
+-   If we’re studying athletes, variables might include height, training hours, or reaction time.
+-   In a business context, they might be sales revenue, customer satisfaction, or number of website visits.
+
+Some variables are numeric — they involve numbers that can be measured (like weight or income). Others are categorical, describing qualities or groups (like gender, position played, or brand preference). Knowing which kind of variable we have is like knowing whether we’re working with flour or sugar — it determines what “statistical recipe” we should follow.
+
+If we treat every variable the same way, we might end up “deep-frying” our data instead of baking it. The secret to good statistical practice is understanding what each variable represents and choosing the right method to work with it.
+
+### Numerical and Categorical Data
+
+In this unit, we simplify our variables down to two types of data:
+
+-   Numerical
+-   Categorical
+
+In analysing data, it is important to be aware of the different types of data. Different sorts of analyses are appropriate for different types of data (see section above on Cooking!). The following categorisation of data will come up throughout the unit:
+
+```{r}
+data.frame(
+  Type = c("Numeric",
+           "Categorical"),
+  Description = c(
+    "Data that takes a numeric value.",
+    "Data that can be classified into distinct categories."
+  ),
+  Example = c(
+    "Height, Weight, Income, Exam score",
+    "Country of birth, Eye colour, Employment status"
+  )
+) |> 
+  regulartable() |> 
+  autofit()
+```
+
+When distinguishing between data types, a useful strategy is to think about what the *units of measurement* are — or whether there even are any!
+
+If the data have a clear unit (like meters, kilograms, seconds, or dollars), they’re most likely numerical — they involve quantities that can be measured and compared using a number. For instance, a runner’s time in seconds or a student’s test score both have meaningful numerical scales and units.
+
+If there are no meaningful units — for example, if the data describe categories like “left-hand/right-hand,” “Yes/No,” or “Apple/Orange/Banana” — then we’re dealing with categorical data. These represent qualities or groupings rather than measurable amounts.
+
+Thinking in terms of units helps guide what analyses are appropriate. You can’t sensibly take an average of “Apple” or “Blue,” but you can average numbers measured in kilograms or seconds. In other words, identifying the presence (or absence) of units tells you whether the data are about how much or what kind.
+
+::: callout-tip
+## Practice Exercise 1.1
+
+Consider the variables below and choose the type of data associated with that variable:
+
+|  |  |
+|:-----------------------------------|------------------------------------|
+| **Variable** | **Type** |
+| Annual Income | `r webexercises::mcq(c(answer="Numerical", "Categorical"))` |
+| Employment Status | `r webexercises::mcq(c("Numerical", answer = "Categorical"))` |
+| Mode of transportation | `r webexercises::mcq(c("Numerical", answer = "Categorical"))` |
+| Time spent at Company | `r webexercises::mcq(c(answer="Numerical", "Categorical"))` |
+| Highest level of Education | `r webexercises::mcq(c("Numerical", answer = "Categorical"))` |
+:::
+
+## Understanding Categorical data
+
+This week, we will focus our attention towards understanding categorical data analysis. To begin, read through the scenario below, which relates to two categorical variables.
+
+::: callout-note
+## Exercise and Medical Conditions
+
+Suppose we had some qualitative information on 5,000 people in Australia including information on whether the individual has been diagnosed with a particular medical condition and the amount of exercise they do.
+
+-   Individuals were asked to indicate their primary medical condition out of; 'Asthma', 'Cancer', 'Depression’, 'Diabetes', 'Heart Disease' or 'None of Above'.
+-   They were also categorised by the amount of exercise they did each week; either 'Moderate' or 'Minimal' exercise.
+
+**Note:** In the real world, people can have multiple medical conditions at a given time. To keep this example simple, we will assume each person in this data set only has one condition.
+
+<center>
+
+![](https://www.lifelinehealthcarebd.org/data/frontImages/Morning-exercise.jpg)
+
+**Source: https://www.lifelinehealthcarebd.org**
+
+</center>
+:::
+
+### Tabular format
+
+The table below is a snapshot of the data (showing just the first 8 people in the sample).
+
+```{r}
+df1 <- data.frame(
+  'Person_ID' = c(1:8),
+  Condition = c(
+    "None", "Heart Disease", "Diabetes","None",
+    "None", "None", "Asthma", "None"),
+  Exercise = c("Moderate", "Moderate","Moderate","Moderate",
+               "Minimal","Moderate","Minimal","Moderate")
+  ) |> 
+  regulartable() |> 
+  align(j = 1, align = "center", part = "all") |> 
+  autofit()
+df1
+```
+
+For each person, we have collected two pieces of information: Condition and Exercise. It’s common the assign our subjects an ID number to make analysis more manageable (here: 1 to 8). Data that is arranged like the table above is considered data in **tabular format**, where each row corresponds to data for a single person. For example:
+
+-   Person 1 has no medical conditions, and does moderate exercise.
+-   Person 2 has heart disease and does moderate exercise.
+-   Person 7 has asthma and does minimal exercise.
+
+Before you do any sort of analysis, it’s important to have your data in tabular format.
+
+### Visualising categories
+
+It’s often a good idea to start all analyses by visualising the data. When dealing with categorical data, it’s useful to obtain the frequencies (or counts) for your variable(s) of interest.
+
+For example, looking at our snapshot table from above, but only focusing on the `Conditon` variable, we can obtain the frequencies for each condition in this snapshot:
+
+![](images/CatTable1.png)
+
+::: callout-tip
+## Practice Exercise 1.2
+
+Complete the frequency table for the second variable, **Exercise**:
+
+```{r}
+data.frame(
+  Exercise = c("Moderate", "Moderate","Moderate","Moderate",
+               "Minimal","Moderate","Minimal","Moderate")
+  ) |> 
+  regulartable() |> 
+  autofit()
+```
+
+| **Exercise** | **Frequency**             |
+|--------------|---------------------------|
+| Minimal      | `r webexercises::fitb(2)` |
+| Moderate     | `r webexercises::fitb(6)` |
+:::
+
+### Bar charts
+
+Another way to visualise your data is with plots. When plotting frequencies / counts, bar charts are often a good first choice. The height of the bars represent the counts – therefore it’s easy for people to quickly look at the plot and see which groups are high / low.
+
+```{r}
+library(tidyverse)
+df2 <- data.frame(
+  'Person_ID' = c(1:8),
+  Condition = c(
+    "None", "Heart Disease", "Diabetes","None",
+    "None", "None", "Asthma", "None"),
+  Exercise = c("Moderate", "Moderate","Moderate","Moderate",
+               "Minimal","Moderate","Minimal","Moderate")
+  )
+p1 <- df2 |> 
+  ggplot(aes(Condition)) +
+  geom_bar() +
+  ylab("Frequency") +
+  ylim(0,7) +
+  ggtitle("Medical Condition")
+p2 <- df2 |> 
+  ggplot(aes(Exercise)) +
+  geom_bar() +
+  ylab("Frequency") +
+  ylim(0,7) +
+  ggtitle("Amount of Exercise")
+
+library(patchwork)
+p1+p2
+```
+
+### Percentage plots
+
+When dealing with categorical data, sometimes\* it’s useful to think of things in terms of percentages (looking at the tables above, why would percentages be a bad idea for small samples)?
+
+```{r}
+df_plot <- df2 %>%
+  count(Condition) %>%
+  mutate(pct = n / sum(n))
+
+p3 <- ggplot(df_plot, aes(x = "Condition", y = pct, fill = Condition)) +
+  geom_col(position = "fill") +
+  geom_text(
+    aes(label = scales::percent(pct, accuracy = 0.1)),
+    position = position_fill(vjust = 0.5),  # centers label inside each segment
+    color = "white",
+    size = 4
+  ) +
+  scale_y_continuous(labels = scales::percent) +
+  xlab("") +
+  ylab("Percenatge") +
+  theme(legend.position = "bottom")
+
+df_plot2 <- df2 %>%
+  count(Exercise) %>%
+  mutate(pct = n / sum(n))
+
+p4 <- ggplot(df_plot2, aes(x = "Exercise", y = pct, fill = Exercise)) +
+  geom_col(position = "fill") +
+  geom_text(
+    aes(label = scales::percent(pct, accuracy = 0.1)),
+    position = position_fill(vjust = 0.5),  # centers label inside each segment
+    color = "white",
+    size = 4
+  ) +
+  scale_y_continuous(labels = scales::percent) +
+  xlab("") +
+  ylab("Percenatge") +
+  theme(legend.position = "top")
+
+p3 + p4
+```
+
+\*For condition, one person is 12.5% of the data! This can be very misleading if we don’t know the raw counts.
+
+## Contingency Tables
+
+In the previous section we looked at the variables one at a time. But we can also look at the variables as pairs (i.e. both at the same time). This is referred to as a contingency table or a cross tabulation.
+
+```{r}
+library(gtsummary)
+df2 |> 
+  tbl_cross(row = Condition, col = Exercise) |> 
+  bold_labels()
+```
+
+We can read this table both **column-wise** and **row-wise**. For example:
+
+-   Of the 6 people who do Moderate exercise:
+    -   0 have Asthma
+    -   1 has Diabetes
+    -   1 has Heart Disease
+    -   4 have no condition
+-   Of the 5 people who have no condition:
+    -   1 does Minimal exercise
+    -   4 does Moderate Exercise
+
+:::: callout-tip
+## Practice Exercise 1.3
+
+Let's now have a look at the full data:
+
+```{r}
+Exercise <- read.csv("data/01. Exercise.csv") |> 
+  rename(Condition = 2)
+Exercise  |> 
+  tbl_cross(row = Condition, col = Exercise) |> 
+  bold_labels()
+```
+
+a.  In this sample, how many people have diabetes?
+b.  Of those who have diabetes, how many do minimal exercise?
+c.  Of those who do minimal exercise, how many have diabetes?
+d.  What are the percentages for B. and C.?
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+a.  202
+b.  146
+c.  146
+d.  72.28% and 4.54%, respectively
+:::
+::::
+
+From Question d above we can see that we need to be mindful of how we are interpreting contingency tables (row-wise or column-wise). You might have the same frequency in the table cells; however, the percentages can be completely different!
+
+```{r}
+Exercise  |> 
+  tbl_cross(row = Condition, col = Exercise, percent = 'row') |> 
+  bold_labels() %>%
+  modify_caption("Counts and Percentages (row-wise)")
+```
+
+```{r}
+Exercise  |> 
+  tbl_cross(row = Condition, col = Exercise, percent = 'column') |> 
+  bold_labels()%>%
+  modify_caption("Counts and Percentages (column-wise)")
+```
+
+To extend this idea, let’s see how the percentages differ when you divide the raw frequencies by different elements.
+
+![](images/CatTable2.png)
+
+In each of these % tables, we can see how dividing by either the row, grand or column total will yield us different results. Note: we’ll be talking about conditional probabilities soon, so it’s better to have these in decimal format, rather than percentages.
+
+Using these values, we can now talk about three types of probabilities:
+
+1.  **Marginal probabilities** are our row and column probabilities.
+    -   For example, the probability that a randomly selected person does moderate exercise, is Pr(Moderate) = 0.3568
+    -   And, the probability that a randomly selected person has diabetes, is Pr(Diabetes) = 0.0404
+2.  The cell values (excluding totals) within a contingency table tell us about the **joint** (or **intersection**) probabilities.
+    -   For example, the probability that a randomly selected person has diabetes AND does minimal exercise, Pr(Diabetes ∩ Minimal) = 0.0292
+    -   And, the probability that a randomly selected person has diabetes AND does moderate exercise, Pr(Diabetes ∩ Moderate) = 0.0112
+3.  **Conditional probabilities** represent the probability of an event conditional on another event (and are our cell values divided by the row or column total).
+    -   For example, the probability someone has diabetes given they do minimal exercise, is Pr(Diabetes \| Minimal) = 0.0454
+    -   And, the probability someone has diabetes given they do moderate exercise, is Pr(Diabetes \| Moderate) = 0.0314
+
+Note: We can also look at conditional probabilities row-wise as well.
+
+-   For example, the probability someone does minimal exercise given they have Diabetes, is Pr(Minimal \| Diabetes) = 0.7228
+-   And, the probability someone does moderate exercise given they have Diabetes, is Pr(Moderate \| Diabetes) = 0.2772
+
+::: callout-warning
+## Conditional Probability Formula
+
+Mathematically, conditional probabilities can be derived from the contingency table and the following formula:
+
+$$Pr(A|B)=\frac{Pr(A ∩ B)}{Pr(B)}$$ For example, suppose we wanted to determine the probability that someone has diabetes given they do minimal exercise.
+
+```{r}
+Exercise  |> 
+  tbl_cross(row = Condition, col = Exercise) |> 
+  bold_labels()
+```
+
+This becomes:
+
+$$Pr(Diabetes|Minimal)=\frac{Pr(Diabetes ∩ Minimal)}{Pr(Minimal)}$$ $$Pr(Diabetes|Minimal)=\frac{146/5000}{3216/5000}$$ $$Pr(Diabetes|Minimal)=0.0454$$
+
+(Note: if you look at the "Divide by Column Totals" table above, you'll see that this matches the answer here)
+:::
+
+:::: callout-tip
+## Practice Exercise 1.4
+
+Using the formula provide above, determine Pr(None of Above \| Moderate).
+
+```{r}
+Exercise  |> 
+  tbl_cross(row = Condition, col = Exercise) |> 
+  bold_labels()
+```
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+$$Pr(None|Moderate)=\frac{Pr(None ∩ Moderate)}{Pr(Moderate)}$$ $$Pr(None|Moderate)=\frac{1224/5000}{1784/5000}$$ $$Pr(None|Moderate)=0.6861$$
+:::
+::::
+
+## Independence
+
+In statistics, two categorical variables are said to be independent if the distribution of one variable does not depend on the other. In other words, knowing the value of one variable gives you no information about the value of the other. For example, if exercise habits are independent of work type, then the proportion of people who exercise regularly would be the same for both office-based and non-office workers.
+
+Mathematically, there are a few different ways to check for independence. Two methods are shown below using our existing data set (suppose we want to check if having diabetes and amount of exercise is independent).
+
+::: callout-warning
+## Checking Independence (Method 1)
+
+One method is to use the formula:
+
+$$Pr(A|B_{1})=Pr(A|B_{2})=Pr(A)$$
+
+In this example,
+
+-   let A = Diabetes
+-   B1 = Minimal Exercise
+-   B2 = Moderate Exercise
+
+Here:
+
+-   Pr⁡(Diabetes)=0.0404
+-   Pr⁡(Diabetes\|Minimal)=0.0454
+-   Pr⁡(Diabetes\|Moderate)=0.0314
+
+Therefore:
+
+Pr⁡(Diabetes\|Minimal) ≠ Pr⁡(Diabetes\|Moderate) ≠ Pr⁡(Diabetes)
+
+And since, these are not equal, we cannot assume independence. In other words, the likelihood of developing diabetes depends on how much exercise you do.
+:::
+
+::: callout-warning
+## Checking Independence (Method 2)
+
+Another common method for checking independence is shown here.
+
+$$Pr(A∩B)=Pr(A)\times Pr(B)$$
+
+In this example,
+
+-   let A = Diabetes
+-   B = Minimal Exercise (we can use either Minimal or Moderate)
+
+Here:
+
+-   Pr(A) = 202/5000 = 0.0404
+-   Pr(B) = 3216/5000 = 0.6432
+-   Pr(A∩B) = 146/5000 = .0292
+
+And:
+
+-   Pr(A) x Pr(B) = 0.0404 x 0.6432 = 0.0260
+
+Compare with joint probability:
+
+-   Does Pr(A∩B) = Pr(A) x Pr(B)?
+-   0.0292 ≠ 0.0260
+-   Therefore, having diabetes and amount of exercise are not independent
+
+**Note**: If you had used *Moderate* exercise as Pr(B) instead of *Minimal* exercise, you would still make the same conclusion.
+:::
+
+**Important:** This check for independence assumes our probabilities are a good reflection of the population. Most of the time, you’ll only ever be working with sample data. In which case, we are looking for the probabilities to be approximately equal.
+
+In later units, you will learn about these different tests and how to use them to check for independence (e.g. Chi-square Test). But for this unit, we will assume probabilities are exactly known and correct.
+
+::: callout-tip
+## Practice Exercise 1.5 (Challenge)
+
+Suppose you draw two cards from a standard deck of 52 playing cards, **with replacement**. Are the events "first card is an Ace" and "second card is also an Ace" independent?
+
+Begin byconstructing a 2x2 contingency table that looks something like:
+
+|  |  |  |  |
+|:-----------------|:----------------:|:----------------:|:----------------:|
+|  | **2nd Card**: Ace | **2nd Card**: Not Ace | Total |
+| **1st Card**: Ace | `r webexercises::fitb(16)` | `r webexercises::fitb(192)` | `r webexercises::fitb(208)` |
+| **1st Card**: Not Ace | `r webexercises::fitb(192)` | `r webexercises::fitb(2304)` | `r webexercises::fitb(2496)` |
+| Total | `r webexercises::fitb(208)` | `r webexercises::fitb(2496)` | `r webexercises::fitb(2704)` |
+
+Then you can use either method from above (for practice, try both!) to check if the events "first card is an Ace" and "second card is also an Ace" independent?
+
+**Solutions can be found in the lecture recording**
+:::
+
+## Excel
+
+In this section we will learn how to use Microsoft Excel to solve some of the concepts covered in this chapter. Begin by downloading the data file below and then follow the instructions by navigating through the screenshots.
+
+```{r}
+library(downloadthis)
+download_file(
+  path = "data/01. Exercise.csv",
+  button_label = "Medical Condition and Exercise",
+  button_type = 'success'
+)
+```
+
+### Pivot Tables
+
+When your dataset is in tabular format (rows = observations, columns = variables), Excel can quickly summarise relationships between variables using Pivot Tables. A Pivot Table is an interactive summary table that allows you to group, count, and compare categories within your data. It’s particularly useful for:
+
+-   Creating frequency tables
+-   Building contingency tables
+-   Exploring patterns and relationships between two categorical variables
+
+Essentially, a Pivot Table lets you “pivot” or rearrange your data to look at it from different perspectives — without changing the underlying dataset.
+
+Follow the instructions below to create PivotTables for this scenario. You will also learn how to change the raw counts to conditional probabilities.
+
+::: panel-tabset
+#### 1
+
+After you have loaded the data, click on the **Insert** Tab, then click **PivotTable**. This will open up the Create PivotTable dialog box. Excel usually does a good job of identifying the range of our data automatically (in this case cells A1 to C5001). We can then just click **OK**.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/01.Pivot1.png")
+```
+
+#### 2
+
+A new sheet will be created in your workbook, with PivotTable Fields appearing on the right of the window. To begin, let's move **Medical Condition** into the Rows and Values boxes. This now creates a PivotTable that shows the counts of the conditions within our data.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/02.Pivot1.png")
+```
+
+#### 3
+
+To create a contingency table, we can move a second variable into the columns field box. Let's move **Exercise** into this box. Notice here that your pivot table will update automatically. Try moving the variables to different field boxes to see what happens!
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/03.Pivot1.png")
+```
+
+#### 4
+
+By default the PivotTable shows the counts or frequencies. We can very easily change these to row or column totals to show conditional probabilities. Right-click on any number with the table, then select **Show Values As** and select **% of Column Total**.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/04.Pivot1.png")
+```
+
+#### 5
+
+Our table now shows the conditional probability (column-wise). We can also change the format of the table and how the values are presented (e.g. %, decimal, etc.). Click on the **Home** tab, highlight the data, then switch to decimal. You can also increase / decrease decimal places as well.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/05.Pivot1.png")
+```
+
+#### 6
+
+You can also copy and paste a PivotTable quite easily to show different things. Have a go at creating two PivotTables - one that shows the conditional probability (column-wise), and one that shows the conditional probability (row-wise). Use the screenshot here to check your answer.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/02.Pivot1.png")
+```
+:::
+
+### Excel formulas (Challenge Task)
+
+While PivotTables are a fast and flexible way to summarise categorical data, it’s also valuable to know how to perform these calculations manually using Excel formulas. Understanding the underlying formulas helps you see how the summaries are generated and gives you more control when customising reports or creating automated dashboards. This can be a valuable skill to add to your CV. Note: there are many ways to complete this task. The screenshots below suggest only one of these methods.
+
+::: panel-tabset
+#### 1
+
+Use the `UNIQUE` function to find all levels of the Medication Condition variable.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/07.Pivot2-1.png")
+```
+
+#### 2
+
+Next, let's remove the formulas from these cells. Copy the cell contents and paste over it as "values only".
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/08.Pivot2-2.png")
+```
+
+#### 3
+
+Optional: Switch to the Data tab and arrange the data alphabetically.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/09.Pivot2-3.png")
+```
+
+#### 4
+
+We can do the same for the levels of Exercise as well (although because we only have 2 categories it's faster just to type them out).
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/10.Pivot2-4.png")
+```
+
+#### 5
+
+Use the `COUNTIFS` function to count how many cases have asthma and minimal exercise.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/11.Pivot2-5.png")
+```
+
+#### 6
+
+Drag this formula down for all medical conditions.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/12.Pivot2-6.png")
+```
+
+#### 7
+
+Repeat for the Moderate Exercise column
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/13.Pivot2-7.png")
+```
+
+#### 8
+
+Use the `SUM` function to calculate the row totals
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/14.Pivot2-8.png")
+```
+
+#### 9
+
+Repeat for the column totals
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/15.Pivot2-9.png")
+```
+
+#### 10
+
+Copy and Paste the tables **twice** to two different places on the workbook. Remove the values, such that only the row and column labels remain.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/16.Pivot2-10.png")
+```
+
+#### 11
+
+Calculate the conditional probabilities for each table by dividing the cell value by either their respective row / column totals.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Excel 01 - Categorical Data/17.Pivot2-11.png")
+```
+:::
+
+## Summary
+
+In this chapter, we built the foundations for understanding data in statistics — beginning with the concept of a variable. A variable is any characteristic or property that can take on different values across individuals or observations. Recognising what kind of variable you’re dealing with is essential because it determines the type of analysis and visualisation that are appropriate.
+
+We classified variables into two main types:
+
+-   Numerical variables, which represent quantities that can be measured and expressed with meaningful units (e.g., height in centimeters, income in dollars, reaction time in seconds).
+-   Categorical variables, which describe qualities, groups, or classifications without meaningful numerical scales (e.g., gender, country of birth, eye color).
+
+Understanding whether a variable has units of measurement helps determine which type it is — and consequently, which statistical “recipe” to use.
+
+We also introduced the idea of tabular data, where each row represents one observation (e.g., one person) and each column represents a variable. This structure is fundamental for statistical analysis because it allows data to be organised, summarised, and visualised systematically.
+
+From there, we examined how to explore relationships between two categorical variables using contingency tables (or cross-tabulations). These tables display the frequency of each possible combination of categories, helping us observe patterns and associations between variables.
+
+This led to the introduction of key probability concepts:
+
+-   Marginal probabilities: the overall probabilities of a single event occurring (e.g., the proportion of people who exercise regularly).
+-   Joint probabilities: the probability that two events occur together (e.g., someone both has diabetes and exercises minimally).
+-   Conditional probabilities: the probability of one event occurring given that another has occurred (e.g., the probability of having diabetes given minimal exercise).
+
+Finally, we explored the idea of independence. Two categorical variables are independent if the probability of one event does not change based on the outcome of the other. In other words, knowing one provides no information about the other. We learned two ways to check for independence — by comparing conditional probabilities or by testing whether
+
+$$Pr(A∩B)=Pr(A)×Pr(B)$$
+
+Understanding these concepts — how variables are defined and structured, how relationships between them are summarised in tables, and how probability underpins their interpretation — provides the essential groundwork for all statistical reasoning and inference that follows.
+
+## Exercises
+
+:::: callout-note
+## Question 1
+
+The table below is the same one presented in the readings regarding medical condition and amount of exercise
+
+|                   |                      |                       |           |
+|:------------------|:--------------------:|:---------------------:|:---------:|
+| **Condition**     | **Minimal Exercise** | **Moderate Exercise** | **Total** |
+| Asthma            |         260          |          166          |  **426**  |
+| Cancer            |         256          |          125          |  **381**  |
+| Depression        |         323          |          170          |  **493**  |
+| Diabetes          |         146          |          56           |  **202**  |
+| Heart Disease     |         220          |          43           |  **263**  |
+| None of the above |         2011         |         1224          | **3235**  |
+| **Total**         |       **3216**       |       **1784**        | **5000**  |
+
+Determine if Heart Disease and Exercise are independent, using the product rule
+
+$$Pr(A∩B)=Pr(A)\times Pr(B)$$
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+**Define A and B**
+
+-   Let A: Undergraduate
+-   Let B: Minimal exercise
+
+**Obtain probabilities**
+
+-   Pr(A) = 263/5000 = .053
+-   Pr(B) = 3216/5000 = .643
+-   Pr(A ∩ B) = 220/5000 = .044
+
+**Multiply marginal probabilities**
+
+-   Pr(A) x Pr(B) = .053 x .643 = .034
+
+**Compare with joint probability**
+
+-   Does Pr(A ∩ B) = Pr(A) x Pr(B)
+-   .044 ≠ .034
+-   Therefore not independent
+:::
+::::
+
+:::: callout-note
+## Question 2
+
+The table below show the proportion of females and males in each category of education level for a sample of Australian adults.
+
+|                  |            |            |            |
+|:-----------------|:----------:|:----------:|:----------:|
+| **Row Labels**   |  **Male**  | **Female** | **Total**  |
+| Less than year12 |   19.4%    |   17.9%    | **18.6%**  |
+| Postgraduate     |    9.5%    |    6.5%    |  **7.9%**  |
+| TAFE             |   22.7%    |   19.6%    | **21.1%**  |
+| Undergraduate    |   19.4%    |   23.2%    | **21.4%**  |
+| Year 12          |   29.1%    |   32.8%    | **31.0%**  |
+| **Total**        | **100.0%** | **100.0%** | **100.0%** |
+
+a.  How has the % values within the table been calculated? (i.e. row-wise or column-wise?)
+b.  What does the number 29.1% tell us in this table?
+c.  What proportion of the sample had achieved less than Year 12 level of education?
+d.  Apply the conditional probability rule to test whether having an undergraduate degree is independent of sex.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+a.  Column-wise
+
+b.  29.1% of the sample are male and completed year 12
+
+c.  18.6%
+
+d.  Pr(Undergraduate) = 21.4%
+
+    Pr(Undergraduate \| Male) = 19.4%
+
+    Pr(Undergraduate \| Female) = 23.2%
+
+    Pr(Undergraduate \| Male) ≠ Pr(Undergraduate \| Female) ≠ Pr(Undergraduate)
+
+    Therfore, not independent
+:::
+::::
+
+:::: callout-note
+## Question 3
+
+In this exercise, you will look at some data on poverty rates for different types of households. The data is based on the 2015 Australian Census, and covers the Metropolitan Melbourne region.
+
+The table below shows the poverty rates for Melbourne for different types of households, in terms of number of parents and number of children.
+
+|  |  |  |  |  |  |
+|------------|:----------:|:----------:|:----------:|:----------:|:----------:|
+| **Household** | **N children = 1** | **N children = 2** | **N children = 3** | **N children = 4** | **Total** |
+| Single parent | 16.9% | 23.5% | 27.6% | 34.3% | **20.6%** |
+| Two parents | 6.7% | 6.3% | 7.9% | 15.4% | **7.2%** |
+
+a.  What is the probability that a Melbourne household with a single parent and two children will be poor?
+b.  What does the number 20.6% in the last column mean?
+c.  Discuss the patterns in this table – how does the poverty rate vary with number of parents and number of children? Give some intuition for the patterns you find.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+a.  0.235
+
+b.  20.6% of all single-parent households have incomes that fall below the poverty line
+
+c.  **N Parents:** The poverty rate is much lower for two-parent households compared to single-parent households. It could be that single-parent households may need to trade off some (or all) of their working capacity to take care of their children (i.e. work part-time and earn less). Whereas in two-parent households, the second parent may be more able to work full-time.
+
+    **N Children:** The poverty rate appears to increase as the number of children increases. Perhaps those who have fewer children are more career-oriented rather than family-oriented. This trade-off would see these households earning more and therefore less likely to fall under the poverty line.
+:::
+::::
+
+:::: callout-note
+## Question 4
+
+The tables below relate to the scenario from the previous question, and show the percentage of poverty according to household type.
+
+Table 1. Joint probabilities
+
+| Household | N children = 1 | N children = 2 | N children = 3 | N children = 4 | Total |
+|:-----------|------------|------------|------------|------------|------------|
+| Single parent | 22.1% | 16.5% | 6.7% | 3.1% | 48.3% |
+| Two Parents | 16.4% | 19.0% | 9.9% | 6.3% | 51.7% |
+| Total | 38.5% | 35.5% | 16.5% | 9.5% | 100.0% |
+
+Table 2. Conditional probabilities
+
+| Household | N children = 1 | N children = 2 | N children = 3 | N children = 4 | Total |
+|:-----------|------------|------------|------------|------------|------------|
+| Single parent | 45.7% | 34.1% | 13.8% | 6.4% | 100.0% |
+| Two Parents | 31.8% | 36.8% | 19.1% | 12.3% | 100.0% |
+
+a.  What does the value 48.3% in the last column of the first table mean?
+b.  What is the probability that a poor household has two parents and two children?
+c.  What is the probability that a poor, two-parent household will have more than two children?
+d.  Among poor households, show that the number of children in a household is NOT independent of whether there are two parents or one. Explain your reasoning. Give some intuition for why this dependence is likely to be present.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+a.  48.3% of households living below the poverty line consist of a single parent.
+
+b.  Using Table 1: The probability is 0.190 (or 19.0%).
+
+c.  Using Table 2: Pr(3 children \| 2 parents) + Pr(4 children \| 2 parents) = 19.1 + 12.3 = 31.4%
+
+d.  Since we already have Table 2 (conditional probabilities), we will use that approach
+
+    P(1 child \| single parent) = 45.7%
+
+    P(1 child \| two parents) = 31.8%
+
+    Therefore not independent
+
+    Intuitive explanation: Single-parent households are more likely to have only one child, while two-parent households are more likely to have multiple children. This dependence likely exists because: (1) Raising children is more manageable with two parents, (2) Two-parent households typically have higher combined incomes and shared responsibilities.
+:::
+::::
+
+:::: callout-note
+## Question 5
+
+Download the file below and open it in Excel.
+
+```{r}
+library(downloadthis)
+download_file(
+  path = "data/Topic 1 Practice Exercises Data.xlsx",
+  button_label = "Travellers",
+  button_type = 'success'
+)
+```
+
+The sheet "Travellers" contains a worksheet of raw data. The data have been collected from 3999 travellers as they arrived at Melbourne airport. The sheet contains the country (region) they came from and the main purpose of their visit (work, study or tourism), so there are two categorical variables to be examined: one is "Region" and the other is "Purpose".
+
+a.  Create a univariate pivot table which looks at the purpose of travel – i.e. study, work or tourism. Examine and comment on the frequency of these three travel purposes.
+b.  Construct a contingency table which shows the percentage of travellers with different purposes by their region. Which region has the highest proportion of people coming for the purposes of study?
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+a.  
+
+|                 |                      |
+|:----------------|:--------------------:|
+| **Row Labels**  | **Count of purpose** |
+| study           |         1559         |
+| tourism         |         1247         |
+| work            |         1193         |
+| **Grand Total** |       **3999**       |
+
+It appears that travellers tend to visit Melbourne mainly for the purpose of study, and they are less likely to visit Melbourne for work.
+
+b.  
+
+|  |  |  |  |  |  |
+|:-----------|:----------:|:----------:|:----------:|:----------:|:----------:|
+| **Row Labels** | **Americas** | **Asia** | **Europe** | **Middle East** | **Grand Total** |
+| study | 45.82% | 52.13% | 18.25% | 41.44% | **38.98%** |
+| tourism | 46.08% | 24.47% | 48.42% | 10.04% | **31.18%** |
+| work | 8.10% | 23.40% | 33.33% | 48.52% | **29.83%** |
+| **Grand Total** | **100.0%** | **100.0%** | **100.0%** | **100.0%** | **100.0%** |
+
+It is clear that in terms of traveling purpose, more than half of the Asian travellers visit Melbourne for study, while almost half of European travellers are tourists. To sum up, travellers from different regions visit Melbourne for different purposes.
+:::
+::::
+
+:::: callout-note
+## Question 6
+
+This question will use the same file from the previous exercise. Begin by switching to the sheet labelled "HDI & Schooling". It contains data from the Human Development Index (HDI). The HDI is an index produced by the United Nations that ranks countries from highest to lowest human development. The index rank is determined based on a number of different measures of development of an economy-based on measures of life expectancy, education and income. The data sheet provides the 2013 rankings for countries with complete data on the relevant development measures, geographical region within which the country is located, along with average years of schooling.
+
+Construct a pivot table with "Region" on the rows and "HDI Category" on the columns. From your pivot tables, determine the following:
+
+a.  Pr(East Asia & Pacific)
+b.  Pr(Sub-Saharan Africa)
+c.  Pr(Very High HDI)
+d.  Pr(East Asia & Pacific ∩ Medium HDI)
+e.  Pr(Sub-Saharan Africa ∩ Low HDI)
+f.  Pr(North America ∩ Very High HDI)
+g.  Pr(Medium HDI \| East Asia & Pacific)
+h.  Pr(Low HDI \| Sub-Saharan Africa)
+i.  Pr(Very High HDI \| North America)
+j.  Pr(East Asia & Pacific \| Medium HDI)
+k.  Pr(Sub-Saharan Africa \| Low HDI)
+l.  Pr(North America \| Very High HDI)
+m.  Check whether the probability of having a "Low HDI" is independent of "Region".
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+a.  Pr(East Asia & Pacific) = 0.1444
+
+b.  Pr(Sub-Saharan Africa) = 0.246
+
+c.  Pr(Very High HDI) = 0.2513
+
+d.  Pr(East Asia & Pacific ∩ Medium HDI) = 0.0802
+
+e.  Pr(Sub-Saharan Africa ∩ Low HDI) = 0.1925
+
+f.  Pr(North America ∩ Very High HDI) = 0.0107
+
+g.  Pr(Medium HDI \| East Asia & Pacific) = 0.5556
+
+h.  Pr(Low HDI \| Sub-Saharan Africa) = 0.7826
+
+i.  Pr(Very High HDI \| North America) = 1
+
+j.  Pr(East Asia & Pacific \| Medium HDI) = 0.3191
+
+k.  Pr(Sub-Saharan Africa \| Low HDI) = 0.7826
+
+l.  Pr(North America \| Very High HDI) = 0.0426
+
+m.  Pr(Low HDI \| East Asia & Pacific) = 0.1111
+
+    Pr(Low HDI \| Europe & Central Asia) = 0.0000
+
+    Pr(Low HDI) = 0.2460
+
+    Not independent
+:::
+::::

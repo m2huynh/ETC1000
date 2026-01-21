@@ -1,0 +1,1011 @@
+---
+title: "The tidyverse"
+---
+
+```{r, include=FALSE}
+library(tidyverse)
+library(flextable)
+library(webexercises)
+```
+
+::: callout-note
+## Learning Objectives
+
+By the end of this chapter, you should be able to:
+
+1.  Explain the purpose and philosophy of the tidyverse and how it differs from base R.
+2.  Use the pipe (`|>`) to build clear, step-by-step data analysis workflows.
+3.  Apply core dplyr verbs (`select()`, `filter()`, `mutate()`, `group_by()`, `summarise()`, `arrange()`) to manipulate and summarise data.
+4.  Choose tidyverse functions in place of older base R alternatives and justify this choice.
+5.  Create and modify data visualisations using `ggplot2` and its layered grammar.
+6.  Fit and interpret simple and multiple linear regression models using tidyverse-based workflows.
+7.  Incorporate categorical variables into regression models using tidy data principles.
+:::
+
+<center>
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Covers/cover8.png")
+```
+
+</center>
+
+## Introduction
+
+Last time, we explored the foundations of R: objects, vectors, data frames, base R functions, and some simple visualisations. These skills are essential, but the way we wrote code was often verbose. For example, we used \$ to extract columns from data frames and had to write the following just to get an average:
+
+```{r, eval=FALSE, echo=TRUE}
+mean(income_data$income)
+```
+
+As analyses become more complex, this style can quickly become hard to read and maintain.
+
+To address this, the R community developed the **tidyverse**: a collection of packages that work together to make data analysis more consistent, readable, and powerful. The tidyverse is like a toolkit where each tool is designed to fit with the others. We’ve already seen one of the packages from the tidyverse (`dplyr)`.
+
+## What is the Tidyverse?
+
+The tidyverse is a family of R packages that share a common philosophy:
+
+-   Data is stored in tibbles (modern data frames).
+-   Functions follow predictable naming conventions.
+-   The pipe (\|\>) allows code to be written step by step.
+-   Packages interoperate seamlessly: what you do in dplyr can be visualised in ggplot2 or reshaped with tidyr.
+
+The core tidyverse includes:
+
+-   ggplot2 – data visualisation.
+-   dplyr – data manipulation (selecting, filtering, summarising).
+-   tidyr – reshaping data.
+-   readr – importing CSV files.
+-   purrr – functional programming (working with lists).
+-   stringr – string manipulation. forcats – working with factors.
+
+We install the tidyverse once, then load it whenever we want to use it:
+
+```{r, eval=FALSE, echo=TRUE}
+install.packages("tidyverse")
+```
+
+## The Grammar of Data Manipulation
+
+The tidyverse, especially through the dplyr package, gives us a set of verbs that form the grammar of data manipulation. These include (but not limited to):
+
+-   select() – choose columns.
+-   filter() – choose rows.
+-   arrange() – reorder rows.
+-   mutate() – create new variables.
+-   summarise() (with group_by()) – collapse data into summaries.
+
+These verbs are simple but powerful: by chaining them together with the pipe, we can express very complex data operations clearly. Let’s have a look at an example using the data set `diamonds` (which comes with tidyverse).
+
+To begin, we’ll create a new project where we can store our script files, data and output.
+
+1.  I’ll create my project folder in “My Documents”, however feel free to place it wherever you like.
+2.  I’ll call this project “Week 8 – diamonds analysis”.
+
+Let’s now load the `diamonds` data set into our global environment. Because it’s a package that comes with the ggplot2 package, we’ll begin by loading the ggplot2 package. Or better yet, we’ll load the tidyverse package, which will load ggplot2 (among other packages) as well! I can then use the ? operator to learn more about this data set.
+
+```{r, eval=FALSE, echo=TRUE}
+library(tidyverse)
+?diamonds
+```
+
+<center>![](images/Chapter%208/01.Diamonds.png)</center>
+
+From the information above, we can see that the data set contains the price of over 50,000 round cut diamonds! For each diamond, the most important variable might be the price, but we also have useful information on other variables that we can use to try and explain price.
+
+Let’s begin with a simple task. Suppose I wanted to only look at the diamonds with the best `clarity`. With these, I would like to determine what `cut` and `color`has the highest costing diamonds, on average. This can easily be achieved by piping together several dplyr functions:
+
+::: callout-note
+### R Code
+
+```{r, echo=TRUE}
+# Start with the diamonds data set
+diamonds |> 
+  
+  # Look in the Column ‘clarity’ and only include those rows where the value is
+  # ‘IF’ (which stands for the best clarity apparently)
+  filter(clarity == "IF") |>
+  
+  # Group the remaining rows by the combination of cut and color
+  group_by(cut, color) |>
+  
+  # For each group, calculate: n: the number of diamonds, and M_price: the mean
+  # price of the diamonds based upon their groupings from the step above
+  summarise(
+    n = n(),
+    M_price = mean(price)) |>
+  
+  # Sort the groups so that those with the highest prices appear first.
+  arrange(desc(M_price))
+
+
+```
+:::
+
+-   From this output, we can see that the most expensive diamonds typically have “very good cuts” and are “D color.”
+-   Although it seems like there’s not too much difference in price between the other two cuts when the color is “D”.
+-   However, is we start to work our way down the list, we can see more variability.
+
+## ggplot2
+
+The table in the previous section was a good start, but let’s start making some visualisations. After all, a picture is worth 1000 words! Last week, we already learnt about the basics behind ggplot2. As a quick refresher, think of ggplot2 as a function that adds layers upon layers to create plots.
+
+<center>![](images/Chapter%207/07.ggplot.png)</center>
+
+The general structure of a ggplot2 command is:
+
+::: callout-note
+### R Code
+
+```{r, eval=FALSE, echo=TRUE}
+ggplot(data = <DATA>, mapping = aes(<AESTHETICS>)) +
+  <GEOM_FUNCTION>() +
+  <other layers>
+```
+
+Here, <DATA> is your data frame, <AESTHETICS> define how variables are represented visually (e.g., x-axis, y-axis, colour, fill), and <GEOM_FUNCTION> specifies the type of plot. Additional layers such as labels, scales, or themes can then be added with the + operator.
+:::
+
+### One variable example (numeric)
+
+::: callout-note
+### R Code
+
+```{r, echo=TRUE}
+# Start with the initial layer (the data)
+diamonds |> 
+  
+  # Add an aesthetics layer (the variable)
+  ggplot(aes(x = price)) +
+  
+  # Add a layer for the geometry function
+  geom_histogram()
+```
+:::
+
+### One variable example (categorical)
+
+::: callout-note
+### R Code
+
+```{r, echo=TRUE}
+# Start with the initial layer (the data)
+diamonds |> 
+  
+  # Add an aesthetics layer (the variable)
+  ggplot(aes(x = cut)) +
+  
+  # Add a layer for the geometry function
+  geom_bar()
+```
+:::
+
+### Two variable examples
+
+#### Boxplot
+
+::: callout-note
+### R Code
+
+```{r, echo=TRUE}
+# Start with the initial layer (the data)
+diamonds |> 
+  
+  # Add an aesthetics layer (the variable)
+  ggplot(aes(x = cut, y = price)) +
+  
+  # Add a layer for the geometry function
+  geom_boxplot()
+```
+:::
+
+#### Scatterplot
+
+::: callout-note
+### R Code
+
+```{r, echo=TRUE}
+# Start with the initial layer (the data)
+diamonds |> 
+  
+  # Add an aesthetics layer (the variable)
+  ggplot(aes(x = carat, y = price)) +
+  
+  # Add a layer for the geometry function
+  geom_point()
+```
+:::
+
+### Three variable example
+
+::: callout-note
+### R Code
+
+```{r, echo=TRUE}
+# Start with the initial layer (the data)
+diamonds |> 
+  
+  # Add an aesthetics layer (the variable)
+  ggplot(aes(x = carat, y = price)) +
+  
+  # Add a layer for the geometry function
+  geom_point(aes(color = cut)) # cut as a new variable
+```
+:::
+
+### A more complicated example
+
+::: callout-note
+**Note:** You will not be expected to know how to code up something this complicated in this unit. The figure below is just an example of the types of visualisations you can generate when you become proficient with R.
+
+### R Code
+
+```{r, echo=TRUE}
+library(ggExtra)
+theme_set(theme_minimal())
+
+p <- diamonds %>% 
+  ggplot(aes(x = carat, y = price, color = color, fill = color)) + 
+  geom_point(alpha = .5, shape = ".") +
+  
+  # color scale
+  scale_fill_viridis_d(option = "A", direction = -1) +
+  scale_color_viridis_d(option = "A", direction = -1) +
+  theme(legend.position = c(.85, .4)) +
+  guides(fill = guide_legend(
+    override.aes = list(
+      size = 5, alpha = 1, color = "black", shape = 21))) +
+  
+  # log 2 transformation
+  scale_x_continuous(trans = "log2") +
+  
+  # breaks are original value before log transformation
+  scale_y_continuous(trans = "log2", breaks = 2^c(9:14)) +  
+  annotation_logticks(base = 2) +
+  
+  # regression calculated upon data after transformation
+  geom_smooth(
+    method = "lm", se = F, linewidth = .5, show.legend = F) + 
+  
+  # zoom in
+  # the limit are original values before the log transformation
+  coord_cartesian(xlim = c(.25, 3), ylim = c(400, 2^14))
+
+ggMarginal(p, margins = "y", groupColour = T)
+```
+:::
+
+## More useful functions
+
+### `subset()` and `filter()`
+
+When working with data frames, we often want to keep only the rows that satisfy certain conditions. For example, maybe we only want to look at diamonds that are “Ideal” cut, or perhaps we only want diamonds that cost less than \$1,000.
+
+There are two main ways to achieve this in R:
+
+-   the older base R function `subset()`
+-   the modern tidyverse function `filter()`
+
+::: panel-tabset
+### subset()
+
+**Plain English**: Start with the diamonds data set, and return only the rows where the cut is "Ideal" and the price is less than 1000.
+
+```{r, echo=TRUE}
+subset(diamonds, 
+       cut == "Ideal" & price < 1000)
+```
+
+### filter()
+
+**Plain English**: Start with the diamonds data set, then filter so that only rows remain where cut is "Ideal" and price is less than 1000.
+
+```{r, echo=TRUE}
+diamonds |>
+  filter(cut == "Ideal", price < 1000)
+
+```
+:::
+
+From the example above, we can see that both methods will provide us with the same output. However, in modern coding, we prefer to use filter() over subset. This is because filter():
+
+-   It integrates seamlessly with other tidyverse verbs (mutate(), summarise(), etc.).
+-   It reads more clearly when chained with pipes.
+-   It avoids some of the quirks of subset() (e.g., issues with variable scoping).
+
+### `taaply()` and `group_by() -> summarise()`
+
+Sometimes we don’t just want to filter rows — we want to calculate summary statistics within groups. For example, what is the average price of diamonds for each cut category? There are two common ways to do this:
+
+-   the older base R function tapply()
+-   the modern tidyverse approach using group_by() and summarise()
+
+::: panel-tabset
+### tapply()
+
+**Plain English**: Take the price column from the diamonds dataset, split it by the categories of cut, and compute the mean for each category. The result is a named vector showing the average price for each type of cut.
+
+```{r, echo=TRUE}
+tapply(diamonds$price, 
+       diamonds$cut, 
+       mean)
+```
+
+### group_by() and summarise()
+
+**Plain English**: Start with the diamonds dataset, then:
+
+1.  Group the rows by the variable cut.
+2.  Within each group, summarise by calculating the mean of price.
+
+```{r, echo=TRUE}
+diamonds |>
+  group_by(cut) |>
+  summarise(mprice = mean(price))
+
+```
+:::
+
+Why prefer group_by() and summarise()?
+
+-   It produces a data frame rather than a named vector, which makes it easier to continue working with the result.
+-   It allows you to calculate multiple summaries at once (e.g., mean, median, standard deviation).
+-   It integrates seamlessly with other dplyr verbs (filter(), mutate(), arrange()).
+
+### `ifelse()` and `case_when()`
+
+Often, we want to create a new variable based on conditions. For example, suppose we want to classify diamonds as either “Expensive” if their price is above \$10,000, or “Affordable” otherwise.
+
+There are two common ways to do this:
+
+-   the older base R function ifelse()
+-   the modern tidyverse function case_when()
+
+::: panel-tabset
+### ifelse()
+
+**Plain English**: Create a new column called category. If price \> 10000, assign "Expensive". Otherwise, assign "Affordable".
+
+```{r, echo=TRUE, eval=FALSE}
+diamonds |> 
+  mutate(category = ifelse(price > 10000,
+                           "Expensive",
+                           "Affordable"))
+
+```
+
+### case_when()()
+
+**Plain English**: Start with the diamonds data set, then create a new column called category:
+
+1.  If price \> 10000, label it "Expensive".
+2.  Else if price \> 5000, label it "Moderate".
+3.  Otherwise, label it "Affordable".
+
+```{r, echo=TRUE, eval=FALSE}
+diamonds |>
+  mutate(category = case_when(
+    price > 10000 ~ "Expensive",
+    price > 5000  ~ "Moderate",
+    TRUE          ~ "Affordable"
+  ))
+
+```
+:::
+
+Why prefer case_when()?
+
+-   Handles multiple conditions clearly (no messy nested ifelse() calls).
+-   Reads like a set of rules or a decision tree.
+-   Works seamlessly inside tidyverse pipelines.
+
+## Linear Regression in R
+
+Let’s now build several linear regression models with the diamonds data set
+
+### Simple Linear Regression
+
+Let’s start with the simplest form: predicting diamond price using just one variable. A natural candidate is carat, since we expect larger diamonds to be more expensive. In a simple linear regression, the model is written as:
+
+$$\text{price}=\beta_0+\beta_1\text{carat}+\epsilon$$
+
+Here, β0 is the intercept, β1 is the slope (the expected change in price for each one-unit increase in carat), and ϵ captures the error (the variation in price not explained by carat). By fitting this model, we will see whether carat size alone is a good predictor of price, and how well a straight line captures the relationship.
+
+In R, we can use the `lm()` function to build a linear model. This function has two required arguments:
+
+1.  'formula' (how you building the model)
+2.  'data' (the data set)
+
+Using our diamonds data set, let's fit a model for price using only carat as a variable
+
+::: callout-note
+### R Code
+
+```{r, echo=TRUE}
+lm(
+  formula = price ~ carat,
+  data = diamonds
+)
+```
+:::
+
+When you run the `lm()` function (as we have above), it only outputs the beta coefficients. Here, we can use these to construct the model as
+
+$$\text{price}=-2256+(7756\times\text{carat})+\epsilon$$
+
+If we wanted more information on the model, we should begin by saving the model as an object. Then we can use other functions, such as `summary()` to learn more about our results.
+
+::: callout-note
+### R Code
+
+```{r, echo=TRUE}
+model1 <- 
+  lm(
+  formula = price ~ carat,
+  data = diamonds
+)
+
+summary(model1)
+```
+:::
+
+The `summary()` function transforms our regression results into a table that's quite similar to the one we saw when we ran these in Excel (with Standard Errors, t values and p values.) Below the table we also have fit metrics such as R squared.
+
+### Multiple linear regression with numeric predictors
+
+Diamonds are more than just their weight. Features such as depth (the height of the diamond relative to its width) and table (the size of the flat top facet) can also influence price. In this section, we extend the model to include several numeric predictors:
+
+$$\text{price}=\beta_0+\beta_1\text{carat}+\beta_2\text{depth}+\beta_3\text{table}+\epsilon$$
+
+With multiple predictors, the model can capture more of the variation in diamond prices. However, we must be careful as adding variables can increase complexity without necessarily improving predictive power. This is where interpretation and statistical judgment come in.
+
+::: callout-note
+### R Code
+
+```{r, echo=TRUE}
+model2 <- 
+  lm(
+  formula = price ~ carat + depth + table,
+  data = diamonds
+)
+
+summary(model2)
+```
+:::
+
+### Multiple linear regression with both numeric and categorical predictors
+
+So far, we have only used numeric predictors. But the diamonds dataset also contains categorical features such as cut, color, and clarity. These are qualitative measures that buyers care deeply about, and they can significantly affect the price.
+
+To incorporate categorical predictors into regression, we use dummy variables (also called indicator variables). For example, “cut” has five categories: Fair, Good, Very Good, Premium, and Ideal. The model will estimate how much each cut category increases or decreases the expected price, relative to a reference category.
+
+$$\text{price}=\beta_0+\beta_1\text{carat}+\beta_2\text{depth}+\beta_3\text{table}+\beta4\text{cut}+\epsilon$$
+
+To make our life a bit easier, and to also showcase some more dplyr functions, we’re going to reduce the 5 categories in the cut variable down to 3, before passing it into the model. Have a look at the code below and see if you can understand its logic (don’t worry if you can’t get it now, as Minh will go through it during the lecture):
+
+::: callout-note
+### R Code
+
+```{r, echo=TRUE}
+# Note here I am creating a new data set called diamonds2
+diamonds2 <- 
+  diamonds |> 
+  mutate(cut2 = case_when(
+    cut %in% c("Fair","Good") ~ "Level 1",
+    cut %in% c("Very Good") ~ "Level 2",
+    cut %in% c("Premium", "Ideal") ~ "Level 3"
+  ))
+```
+
+```{r, echo=TRUE}
+# Build a model with the new variable and new data set
+model3 <- lm(price ~ carat + depth + table + cut2, data = diamonds2)
+
+# view results
+summary(model3)
+```
+:::
+
+### Comparing models
+
+With several models at hand, a natural question arises: Which model is best?
+
+There are many ways to compare models:
+
+-   **Goodness of fit:** How much variation in price does the model explain? (measured by R2)
+-   **Parsimony:** Does the model use predictors efficiently, without overcomplicating things?
+-   **Prediction error:** How well does the model perform on unseen data?
+
+Sometimes a simpler model with fewer predictors is preferable if it explains nearly as much as a complex one. Other times, adding categorical variables or interactions is worth it because it greatly improves predictive accuracy.
+
+Looking at the output from the 3 models above, which model do you think is **best**?
+
+```{r}
+tab_model(
+  model1,model2,model3,
+  
+  dv.labels = c("Model 1","Model 2","Model 3"),
+  p.style = 'stars',
+  collapse.ci = T
+)
+```
+
+## Summary
+
+In this chapter, we introduced the tidyverse as a modern, coherent approach to data analysis in R. Rather than relying on verbose base R syntax, the tidyverse encourages clear, readable workflows built around pipes and a small set of consistent verbs. By working with tibbles and chaining operations step by step, complex analyses become easier to write, understand, and modify.
+
+We focused on the core ideas of data manipulation using dplyr, including selecting variables, filtering observations, creating new variables, grouping data, and producing summaries. Along the way, we compared older base R functions (such as `subset()`, `tapply()`, and `ifelse()`) with their tidyverse counterparts, highlighting why the tidyverse approach is generally preferred in modern analysis.
+
+We also revisited `ggplot2`, reinforcing the idea of plots as layered objects that map data to visual aesthetics. Through a series of examples, we showed how the tidyverse workflow naturally extends from data manipulation into data visualisation.
+
+Finally, we demonstrated how tidyverse tools integrate seamlessly with linear regression, from simple models to more complex models that include multiple numeric predictors and categorical variables. By combining tidy data manipulation, clear visualisation, and modelling, the tidyverse provides a powerful and flexible foundation for the analyses you will encounter throughout the rest of this unit.
+
+## Exercises
+
+:::: callout-note
+## Question 1
+
+We will use the built-in `mtcars` dataset, which contains fuel consumption and design characteristics for 32 cars. Write some code in R to complete the following tasks:
+
+a.  Load the tidyverse package
+b.  Load the `mtcars` dataset and inspect it.
+    -   How many rows and columns does the dataset have?
+    -   What does each row represent?
+    -   Which variables appear to be numeric?
+c.  Convert `mtcars` into a tibble and store it as a new object called `cars`.
+d.  Convert `cyl` (number of cylinders) to a factor.
+e.  Create a new data set (call it `cars2`) that:
+    -   Includes only cars with 4 or 6 cylinders.
+    -   Includes only cars with fuel efficiency (`mpg`) greater than 20
+    -   Keeps only the variables `model`, `mpg`, `cyl`, `hp` and `wt`.
+f.  Using your new data set, create a new categorical variable called `efficiency`:
+    -   `High` if `mpg` is greater than 25,
+    -   `Moderate` if `mpg` is between 20 and 25,
+    -   `Low` otherwise
+g.  Group the data by `cyl` and calculate:
+    -   the average number of cars (`n`),
+    -   the average fuel efficienty (`mean_mpg`),
+    -   the average horsepower (`mean_hp`)
+h.  Arrange your results from part g so that the group with the highest average fuel efficiency appears first
+i.  Create a scatterplot showing the relationship between:
+    -   car weight (`wt`) on the x-axis,
+    -   fuel efficency (`mpg`) on the y-axis
+    -   color the points by the number of cylinders (`cyl`)
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+```{r, echo=TRUE, eval=FALSE}
+# a.
+library(tidyverse)
+```
+
+```{r, echo=TRUE}
+# b.
+str(mtcars)
+```
+
+```{r, echo=TRUE}
+# c. 
+cars <- as_tibble(mtcars, rownames = "model")
+```
+
+```{r, echo=TRUE}
+# d.
+cars <- 
+  cars |>
+  mutate(cyl = factor(cyl))
+```
+
+```{r, echo=TRUE}
+# e.
+cars2 <- 
+  cars |>
+  filter(cyl %in% c("4", "6"), 
+         mpg > 20) |>
+  select(model, mpg, cyl, hp, wt)
+```
+
+```{r, echo=TRUE}
+# f.
+cars2 <- 
+  cars2 |> 
+  mutate(
+    efficiency = case_when(
+      mpg > 25 ~ "High",
+      mpg >= 20 & mpg <= 25 ~ "Moderate",
+      TRUE ~ "Low"
+    )
+  )
+```
+
+```{r, echo=TRUE}
+# g./h.
+cars2 |>
+  group_by(cyl) |>
+  summarise(
+    n = n(),
+    mean_mpg = mean(mpg),
+    mean_hp = mean(hp)
+  ) |>
+  arrange(desc(mean_mpg))
+```
+
+```{r, echo=TRUE}
+# i.
+cars2 |>
+  ggplot(aes(x = wt, y = mpg, color = cyl)) +
+  geom_point()
+```
+:::
+::::
+
+:::: callout-note
+## Question 2
+
+In this exercise, you will use the palmerpenguins dataset to practise tidyverse data handling and fit regression models. The dataset contains measurements on penguins from three species.
+
+To begin you'll need to have the `palmerpenguins` package installed.
+
+```{r, echo=TRUE, eval=FALSE}
+install.packages("palmerpenguins")
+```
+
+Once you have installed this package, write some code to complete the following tasks:
+
+a.  Load the tidyverse and palmerpenguins package
+b.  Load the `penguins` dataset. Inspect the data and determine:
+    -   How many rows and columns are there?
+    -   Which variables are numeric?
+    -   Whaich variables are categorical?
+c.  Create a new dataset called `penguins2` that:
+    -   Keeps only these variables: `species`, `island`, `bill_length_mm`, `bill_depth_mm`, `flipper_length_mm`, `body_mass_g`
+    -   Removes rows with missing values in any of these variables
+d.  For each species, calculate:
+    -   number of penguins (`n`)
+    -   mean body mass (`mean_mass`)
+    -   standard deviation of body mass (`sd_mass`)
+e.  Create a scatterplot of flipper_length_mm (x-axis) vs body_mass_g (y-axis), coloured by species. Add a regression line for each species.
+f.  Fit a simple linear regression model predicting body mass from flipper length and store it as `m1`
+g.  Use the `summary()` function to inspect `m1`. Comment on each coefficient.
+h.  Fit a multiple regression model predicting body mass from flipper length and bill length, and call it `m2`. Inspect the model and comment on each coefficient.
+i.  Fit a model that includes species as a categorical predictor, plus flipper length, and call it `m3`. Inspect the model and comment on each coefficient.
+j.  Fit an interaction model that includes flipper length, species, and the interaction between flipper_length and species, and store it as `m4`. Inspect the model and comment on each coefficient.
+k.  Compare all four models using $R^2$ and $\text{Adjusted } R^2$. Which model seems best, and why?
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+```{r}
+library(palmerpenguins)
+```
+
+```{r, echo=TRUE, eval=FALSE}
+# a.
+library(tidyverse)
+library(palmerpenguins)
+```
+
+```{r, echo=TRUE}
+# b.
+str(penguins)
+```
+
+```{r, echo=TRUE}
+# c.
+penguins2 <- 
+  penguins |> 
+  select(species, 
+         island, 
+         bill_length_mm, 
+         bill_depth_mm, 
+         flipper_length_mm, 
+         body_mass_g) |> 
+  na.omit()
+```
+
+```{r, echo=TRUE}
+# d.
+penguins2 |> 
+  group_by(species) |> 
+  summarise(
+    n = n(),
+    mean_mass = mean(body_mass_g),
+    sd_mass = sd(body_mass_g)
+  )
+```
+
+```{r, echo=TRUE}
+# e.
+penguins2 |> 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = F)
+```
+
+```{r, echo=TRUE}
+# f.
+m1 <- lm(body_mass_g ~ flipper_length_mm, penguins2)
+```
+
+```{r, echo=TRUE}
+# g.
+summary(m1)
+```
+
+```{r, echo=TRUE}
+# h.
+m2 <- lm(body_mass_g ~ flipper_length_mm + bill_length_mm, penguins2)
+summary(m2)
+```
+
+```{r, echo=TRUE}
+# i.
+m3 <- lm(body_mass_g ~ species + flipper_length_mm, penguins2)
+summary(m3)
+```
+
+```{r, echo=TRUE}
+# j.
+m4 <- lm(body_mass_g ~ species + flipper_length_mm + species*flipper_length_mm, penguins2)
+summary(m4)
+```
+
+```{r, echo=TRUE}
+# k.
+data.frame(
+  model = 1:4,
+  R2 = c(
+    summary(m1)$r.squared,
+    summary(m2)$r.squared,
+    summary(m3)$r.squared,
+    summary(m4)$r.squared),
+  Adj.R2 = c(
+    summary(m1)$adj.r.squared,
+    summary(m2)$adj.r.squared,
+    summary(m3)$adj.r.squared,
+    summary(m4)$adj.r.squared
+  )
+) |> 
+  mutate_all(round, 3)
+
+```
+:::
+::::
+
+:::: callout-note
+## Question 3
+
+In this exercise, you will use the ames dataset to practise tidyverse data handling and fit regression models. The dataset contains sales data for 2,930 properties in Ames IA.
+
+To begin you'll need to have the `modeldata` package installed.
+
+```{r, echo=TRUE, eval=FALSE}
+install.packages("modeldata")
+```
+
+Once you have installed this package, write some code to complete the following tasks:
+
+a.  Load the tidyverse and modeldata packages
+b.  Load the `ames` dataset. Inspect the data and determine how many rows and columns are there.
+c.  What does the variable `Sale_Price` represent?
+d.  Create a new dataset called `ames2` that:
+    -   Keeps only the variables: `Sale_Price`, `Gr_Liv_Area`, `Overall_Cond`, `Year_Built` and `Neighborhood`
+    -   Removes rows with missing values
+e.  For each `Neighborhood`, calculate:
+    -   the number of houses (`n`)
+    -   the average sale price (`mean_price`)
+f.  Create a new dataset that keeps neighborhoods with at least 100 houses, and call this `ames3`.
+g.  Create a scatterplot such that:
+    -   living area (`Gr_Liv_Area`) is on the x-axis
+    -   sale price (`Sale_Price`) is on the y-axis
+    -   Add a regression line
+    -   log transform the y-axis
+    -   Only show houses where `Gr_Liv_Area` is less than 4000
+h.  Fit a simple linear regression model predicting sale price from living area and store the model as `m1`. Inspect m1 and interpret the coefficients.
+i.  Fit a multiple regression model predicting sale price from living area, overall condition and year built, and store the model as `m2`. Inspect m2 and interpret the coefficients.
+j.  Create a new variable (call it `Year_Cat`) that groups houses into:
+    -   `Old` (built before 1970)
+    -   `Modern` (built from 1970 onward)
+k.  Refit `m2` except replace year built with the newly created categorical variable from the previous question. Call this model `m2b`. Inspect m2b and interpret the coefficients.
+l.  Compare m1, m2 and m2b using $\text{adjusted } R^2$. Which model provides the best balance between fit and complexity?
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+```{r}
+library(modeldata)
+```
+
+```{r, echo=TRUE, eval=FALSE}
+# a.
+library(tidyverse)
+library(modeldata)
+```
+
+```{r, echo=TRUE}
+# b. / c.
+str(ames)
+```
+
+```{r, echo=TRUE}
+# d.
+ames2 <- 
+  ames |> 
+  select(Sale_Price, Gr_Liv_Area, Overall_Cond, Year_Built, Neighborhood) |> 
+  na.omit()
+```
+
+```{r, echo=TRUE}
+# e.
+ames2 |> 
+  group_by(Neighborhood) |> 
+  summarise(n = n(),
+            mean_price = mean(Sale_Price))
+```
+
+```{r, echo=TRUE}
+# f.
+ames3 <- 
+  ames2 |> 
+  group_by(Neighborhood) |> 
+  mutate(n = n()) |> 
+  filter(n > 100)
+```
+
+```{r, echo=TRUE}
+# g.
+ames3 |> 
+  filter(Gr_Liv_Area < 4000) |> 
+  ggplot(aes(x = Gr_Liv_Area, y = log(Sale_Price))) +
+  geom_point() +
+  geom_smooth(method = 'lm', se = F)
+```
+
+```{r, echo=TRUE}
+# h.
+m1 <- lm(Sale_Price ~ Gr_Liv_Area, ames3)
+summary(m1)
+```
+
+```{r, echo=TRUE}
+# i.
+m2 <- lm(Sale_Price ~ Gr_Liv_Area + Overall_Cond + Year_Built, ames3)
+summary(m2)
+```
+
+```{r, echo=TRUE}
+# j.
+ames4 <- ames3 |> mutate(Year_Cat = ifelse(Year_Built < 1970, "Old", "Modern"))
+```
+
+```{r, echo=TRUE}
+# k.
+m2b <- lm(Sale_Price ~ Gr_Liv_Area + Overall_Cond + Year_Cat, ames4)
+summary(m2b)
+```
+
+```{r, echo=TRUE}
+# l.
+data.frame(
+  model = c("1","2","2b"),
+  Adj.R2 = c(
+    summary(m1)$adj.r.squared,
+    summary(m2)$adj.r.squared,
+    summary(m2b)$adj.r.squared
+  )
+)
+```
+:::
+::::
+
+:::: callout-note
+## Question 4
+
+In this exercise, you will analyse customer credit data to understand factors associated with credit card debt. This dataset combines demographic information, financial capacity, and credit history to help explain credit outcomes.
+
+To begin you'll need to have the `modeldata` package installed.
+
+Once you have installed this package, write some code to complete the following tasks:
+
+a.  Load the tidyverse and modeldata packages
+b.  Load the `credit_data` dataset. Inspect the data and determine how many rows and columns are there.
+c.  Create a new dataset called `credit2` that:
+    -   Keeps only the variables `Debt`, `Income`, `Age`, `Home`, `Marital` and `Assets`
+    -   Removes any rows with missing values
+d.  For each `Home` category, calculate:
+    -   the numer of individuals (`n`),
+    -   the average debt (`mean_debt`),
+    -   the median income (`median_income`)
+e.  Create a boxplot that:
+    -   has `Home` on the x-axis
+    -   log(`Debt`) on the y-axis
+    -   only shows 'owner', 'rent', 'parents' and 'priv' as the `Home` categories
+f.  Fit a simple linear regression model predicting debt from income, and store it as `m1`. Inspect m1 and interpret the coefficients.
+g.  Fit a multiple linear regression model predicting debt from income, age and assets, and store it as `m2`. Inspect m2 and interpret the coefficients.
+h.  Create a new variable called `Debt_level`:
+    -   `Low` if Debt \< 1000
+    -   `Moderate` if Debt is between 1000 and 5000
+    -   `High` if Debt \> 5000
+i.  Recreate m2 for each level of debt (so you should have 3 new models). Call these models `m2_low`, `m2_mod` and `m2_high`. Inspect each model and compare the coefficients.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+```{r, echo=TRUE, eval=F}
+# a.
+library(tidyverse)
+library(modeldata)
+```
+
+```{r, echo=TRUE}
+# b.
+str(credit_data)
+```
+
+```{r, echo=TRUE}
+# c.
+credit2 <- 
+  credit_data |> 
+  select(Debt, Income, Age, Home, Marital, Assets) |> 
+  na.omit()
+```
+
+```{r, echo=TRUE}
+# d.
+credit2 |> 
+  group_by(Home) |> 
+  summarise(n = n(),
+            mean_debt = mean(Debt),
+            median_income = median(Income))
+```
+
+```{r, echo=TRUE}
+# e.
+credit_data |> 
+  filter(Home %in% c("owner","rent","parents","priv")) |> 
+  ggplot(aes(x = Home, y = log(Debt))) +
+  geom_boxplot()
+```
+
+```{r, echo=TRUE}
+# f.
+m1 <- lm(Debt ~ Income, credit2)
+summary(m1)
+```
+
+```{r, echo=TRUE}
+# g.
+m2 <- lm(Debt ~ Income + Age + Assets, credit2)
+summary(m2)
+```
+
+```{r, echo=TRUE}
+# h.
+credit2 <- credit2 |>
+  mutate(
+    Debt_level = case_when(
+      Debt < 1000              ~ "Low",
+      Debt >= 1000 & Debt <= 5000 ~ "Moderate",
+      Debt > 5000              ~ "High"
+    )
+  )
+```
+
+```{r, echo=TRUE}
+# i.
+m2_low <- lm(Debt ~ Income + Age + Assets, credit2 |> filter(Debt_level == 'Low'))
+m2_mod <- lm(Debt ~ Income + Age + Assets, credit2 |> filter(Debt_level == 'Moderate'))
+m2_high <- lm(Debt ~ Income + Age + Assets, credit2 |> filter(Debt_level == 'High'))
+
+sjPlot::tab_model(
+  m2, m2_low, m2_mod, m2_high,
+  dv.labels = c("Combined","Low Debt","Moderate Debt","High Debt"),
+  collapse.ci = T,
+  p.style = 'stars'
+)
+```
+:::
+::::

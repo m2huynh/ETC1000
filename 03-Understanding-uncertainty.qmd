@@ -1,0 +1,908 @@
+---
+title: "Understanding uncertainty"
+---
+
+::: callout-note
+## Learning Objectives
+
+By the end of this chapter, you should be able to:
+
+1.  Explain the idea of **statistical inference** using simple polling and survey examples, and describe the role of uncertainty in drawing conclusions from data.
+2.  Distinguish clearly between a **population** and a **sample**, and between **population parameters** (e.g. $\mu$, $\sigma$) and **sample statistics** (e.g. $\bar{X}$, $s$).
+3.  Identify and describe common forms of **sampling bias** (e.g. sampling, volunteer, survivorship, non-response and undercoverage bias), and explain why they lead to unrepresentative samples.
+4.  Compare and contrast key **sampling methods** – convenience, simple random, systematic, cluster and stratified sampling – and discuss when each is appropriate or problematic.
+5.  Describe the concept of a **sampling distribution**, using repeated samples to explain how statistics such as the sample mean vary from sample to sample.
+6.  State the **law of large numbers** and the **central limit theorem** in words, and explain their implications for why large random samples give more reliable estimates.
+7.  Use the sample mean and sample standard deviation as **estimators** of the population mean and standard deviation, and explain the ideas of unbiasedness and standard error.
+8.  Construct and interpret **confidence intervals for a population mean** (using $t$-based methods), and explain in plain language what a 95% confidence interval does and does *not* mean.
+:::
+
+<center>
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Covers/cover3.png")
+```
+
+</center>
+
+## Introduction
+
+Suppose it's the not too distant future. And you wake up to the following breaking news:
+
+::: {.callout-note collapse="true"}
+## Click to see breaking news
+
+<center>![](images/Chapter%203/01.%20KFC.png)</center>
+:::
+
+Ignoring the fact that this would never happen ... what is the news headline referring to? Basically, a polling company has conducted a survey to find out who people intend to vote for during the upcoming election. In this case, their results show that [50%]{style="color:red"} of the survey responders intend to vote for me when voting time comes around.
+
+Now, suppose they had surveyed a reasonable number of people (n = 600) to get these results. So a result of 50% means that 300 / 600 responders said that they would vote for me. Keep in mind that there are approximately 17,000,000 enrolled voters in Australia. So if we assume the results of the poll don't change (given that people can lie, or change their mind), the only thing we can say with confidence is:
+
+<center>$\frac{300}{17,000,000}= 0.002$% of Australians will vote for Minh on election day.</center>
+
+<br>
+
+Now, 0.002% is very different to that of 50%. Given this fact, how can the polling companies possibly conclude that my chances of winning are so high?
+
+In this case, they have made an [inference]{style="color:red"}. Based on the results of these 600 survey responders, they believe the overall voting population will behave in a similar way.
+
+<center>![](images/Chapter%203/02.%20Inference1.png)</center>
+
+If on the actual day I won by 48% or 53%, then that is pretty close to the polling results so no one would be concerned. But what if I had lost? What if I had only obtained 21% of the votes? This is a massive difference to what the poll had estimated.
+
+> This is where understanding the concept of **uncertainty** is essential in making valid statistical conclusions.
+
+## Populations and Samples
+
+In the previous section, I used the example of using political polls to estimate how people will vote on election day. Although a bit outdated now, one of my favourite cases of political polls has to be the 2016 US Presidential election. For those of you who can't remember, the US President would be decided between two candidates: Hillary Clinton and Donald Trump.
+
+What makes this case interesting is that dozens upon dozens of political polls had Clinton as the clear winner. And as we all know Trump won that election (as well as the one in 2024). So what did the polling companies actually do, and why were they so wrong?
+
+I'm going to adjust the example a little bit, because by now we all know the outcome of the 2016 US Presidential election. Suppose you are a market researcher investigating the Australian people’s opinion towards Donald Trump. Suppose the research question is:
+
+> *If Australians had a vote in the US presidential elections, would they have voted Donald Trump in for a second term?*
+
+Suppose I made a list of **ALL** enrolled voters in Australia and asked each and everyone of them the same (Yes/No) question: "*If Australians had a vote in the US presidential elections, would they have voted Donald Trump in for a second term?*" After I had asked each and every single person, I can then tally up the results.
+
+If the total number of YES's are greater than the total number of NO's (or vice versa), then we would have a definitive answer to this question.
+
+<center>*Why is this approach not possible?*</center>
+
+::: {.callout-important collapse="true"}
+## Click to check your answer
+
+You cannot survey every single member of a target population due to time and resource constraints. The closet you will get would be conducting a census, and even then, this would not capture 100% of the target population.
+:::
+
+So what can we do? How do we go about making inferences and answering research questions?
+
+To answer a research question, we collect a sample to represent the population of interest. If we want accurate results, then we would want our sample to be as similar to the population as possible. We then conduct our experiments / survey / etc. with our sample and make an inference about the population based upon the results of the sample. This process is known as statistical inference:
+
+<center>![](images/Chapter%203/02.Inference2.png)</center>
+
+<br>
+
+:::: callout-note
+## Is your sample reliable?
+
+But how do we know that our sample is reliable? Consider the image below (assume blue dots represent population and red dots represent sample). Would (a) and (b) be considered good / bad samples based upon the research question?
+
+<center>![](images/Chapter%203/02.%20Inference3.png)</center>
+
+::: {.callout-important collapse="true"}
+## Click to check your answer
+
+Recall here that the population of interest = Australian voters, so our sample should try and capture this as best as possible.
+
+(a) would be a bad sample because it only captures those living on the East coast of Australia.
+
+(b) would be a bad sample because it is only capturing those living in major cities (ignoring rural / regional areas)
+:::
+::::
+
+Back to our research question (*If Australians had a vote in the US presidential elections, would they have voted Donald Trump in for a second term?*). Suppose three different market research firms collected one sample each to address this question:
+
+<center>![](images/Chapter%203/02.%20Inference3.5.png)</center>
+
+Depending on which sample was selected, we would have a different conclusion for the population!
+
+-   If we follow the top one then we would infer that most of the people in the Australian population think "Yes."
+-   If we follow the bottom one, we would infer that most of the people in the Australian population think "No."
+-   If we follow the last one, we would infer that most of the people in the Australian population are "undecided."
+
+Now, because we are only ever working with samples, we need to acknowledge that all of our inferences are subject to error.
+
+Back in 2016, the majority of the political polls estimated (inferred) that Clinton would win based upon the people they had surveyed / sampled. This is a list of the polls with the largest samples back in 2016 for this election:
+
+<center>![](images/Chapter%203/02.%20Inference4.png)</center>
+
+As impressive as these samples are, they come nowhere close to capturing ALL of data from the target population, which means, these polls / inferences were subject to uncertainty.
+
+Fortunately, there are ways to minimise this uncertainty - which are explored below.
+
+## Sampling Bias
+
+Sampling bias occurs when the method used to select participants leads to a sample that does not accurately represent the population of interest. In other words, certain individuals or groups in the population have a higher or lower chance of being included in the sample, and these differences are systematic, not due to random variation. As a result, any conclusions drawn from the sample may be misleading because they reflect the characteristics of the biased sample rather than the true characteristics of the population.
+
+Sampling bias can arise in several ways. It may occur through inappropriate sampling frames (e.g., surveying only people who attend a gym when studying national exercise habits), voluntary response (where people who choose to participate differ from those who do not), or convenience sampling (selecting individuals who are easy to reach rather than those who are most representative). In each case, the key issue is that the sampling design systematically favours some outcomes over others.
+
+Understanding and preventing sampling bias is essential because even the most sophisticated statistical methods cannot “fix” a fundamentally unrepresentative sample. Careful planning, clear definitions of the target population, and appropriate random sampling techniques help ensure that the sample accurately reflects the population, allowing researchers to make valid and trustworthy inferences.
+
+The idea is for each object within the population to be equally likely to be chosen as part of the sample. This is called an unbiased sample. When this is violated, we call it **selection bias.**
+
+There are manay different types of Selection bias, with a few examples being provided below.
+
+```{r}
+library(flextable)
+df_bias <- data.frame(
+  Type = c(
+    "Sampling bias",
+    "Attrition bias",
+    "Volunteer bias",
+    "Survivorship bias",
+    "Non-response bias",
+    "Undercoverage bias"
+  ),
+  Description = c(
+    "Some member of the target population are less likely to be included than others.",
+    "Participants who drop out of a study are different from the ones who remain.",
+    "Participants who choose to participate in studies are generally different to those who do not.",
+    "Successful observations are more likely to be represented than unsuccessful ones.",
+    "Participants who refuse to participate or drop out of a study may be different to those who take part.",
+    "Participants who are inadequately represented."
+  )
+)
+
+df_bias |> 
+  regulartable() |> 
+  autofit()
+```
+
+Read through the 2 case studies below to learn more about bias.
+
+::: {.callout-note collapse = "true"} \## Bias in Sampling: The Raymond Pearl Case Study
+
+In 1929, Raymond Pearl of Johns Hopkins University set out to test the hypothesis:
+
+> “Does tuberculosis (TB) protect against cancer?”
+
+Using hospital records, he compared the rates of cancer among patients with and without tuberculosis and concluded that TB appeared to have a protective effect.
+
+```{r}
+data.frame(
+  Status = c("TB","No TB"),
+  Cancer = c(54,762),
+  No_Cancer = c(133, 683),
+  Total = c(187, 1445)
+) |> 
+  regulartable() |> 
+  align(j = 2:4, align = 'center') |> 
+  autofit()
+```
+
+```{r}
+data.frame(
+  Status = c("TB","No TB"),
+  Cancer = c(.0062,.1630),
+  No_Cancer = c(.9338, .8370),
+  Total = c(.1146, .8854)
+) |> 
+  regulartable() |> 
+  align(j = 2:4, align = 'center') |> 
+  autofit()
+```
+
+However, this finding was not the result of biology—it was the result of bias in the sampling process.
+
+At the time of Pearl’s study, tuberculosis was one of the leading causes of hospitalisation at Johns Hopkins Hospital. This meant that the hospital population—Pearl’s sampling frame—contained a disproportionately large number of patients with TB compared with the general population. When he selected his “control” group (patients without cancer), this control sample was already overrepresented with TB cases simply because so many hospital admissions were TB-related.
+
+This introduces a classic case of selection bias: the method used to select participants systematically distorted the groups being compared. The control group was not representative of people without cancer; it was representative of people without cancer who happened to be hospitalised at Johns Hopkins during an era when TB dominated admissions. As a result, the comparison between the “TB group” and the “non-TB group” was fundamentally flawed from the start.
+
+Because TB was so common among hospitalised patients, especially those in the “non-cancer” group, Pearl’s analysis made it appear as though TB patients developed cancer less often. In reality, his sampling method had artificially inflated the number of TB cases in his controls. The result was an illusion of a protective effect where none existed.
+
+Pearl’s study highlights how selection bias can make a false relationship appear real. When the sampling frame is distorted—such as relying solely on hospitalised patients during an epidemic of a particular disease—any conclusions drawn about disease interactions become unreliable. Careful consideration of where, how, and from whom data are collected is essential to avoid repeating the same mistakes in modern research.
+
+:::
+
+::: {.callout-note collapse = "true"} \## Survivorship Bias: The Abraham Wald Case Study
+
+During World War II, the U.S. military faced a critical problem: many aircraft were being lost in combat, and they needed to strengthen the planes to improve their chances of returning safely. Engineers examined the bullet holes on planes that had returned from missions and noticed consistent patterns—certain parts of the aircraft were riddled with damage, while other areas appeared largely untouched. The initial recommendation was straightforward: reinforce the sections that showed the most bullet holes.
+
+However, statistician Abraham Wald, working with the Statistical Research Group, identified a fundamental flaw in this reasoning. The analysis was based solely on the planes that survived and made it back to base. The aircraft that did not return—the ones shot down—were missing from the dataset. This oversight created a textbook example of survivorship bias: drawing conclusions only from the units that remain in the sample, while overlooking those that have been lost, destroyed, or removed.
+
+<center>![](images/Chapter%203/03.%20Survivorship%20bias.png)</center>
+
+Wald realised that the absence of bullet holes in certain areas did not mean those areas were unimportant. Instead, it suggested the opposite: planes hit in those regions were not surviving long enough to be observed. These “missing” planes carried the crucial information. Wald therefore suggested reinforcing the areas with least observed damage, correctly reasoning that these were the true vulnerable points. His insight dramatically improved aircraft survivability and became one of the most famous examples of statistical reasoning under uncertainty.
+
+:::
+
+## Sampling Methods
+
+Choosing an appropriate sampling method is essential for obtaining data that accurately reflect the population of interest. Different sampling strategies have different strengths, limitations, and practical uses. Below are five commonly used methods in introductory statistics.
+
+### Convenience Sampling
+
+Convenience sampling involves selecting individuals who are easiest to reach or most readily available. For example, surveying students walking past the library or collecting responses from friends and colleagues. While this method is quick, inexpensive, and practical, it often produces highly biased samples because the participants may differ systematically from the broader population. Convenience samples are useful for piloting surveys or generating early insights but are generally not suitable for drawing strong conclusions.
+
+### Simple Random Sampling (SRS)
+
+In a simple random sample, every individual in the population has an equal chance of being selected. This can be achieved using random number generators, lottery-style draws, or sampling software. SRS is considered the gold standard of sampling because it minimises selection bias and allows the use of standard statistical inference techniques. However, it can be impractical for very large or geographically dispersed populations.
+
+### Systematic Sampling
+
+Systematic sampling involves selecting individuals at regular intervals from an ordered list. For example, choosing every 10th person on a class roll or every 5th customer entering a store. After a random starting point is chosen, the interval (called the sampling step) remains fixed. This method is efficient and easy to implement. However, if the list has an underlying pattern or periodicity that aligns with the interval, the sample may become biased.
+
+### Cluster Sampling
+
+Cluster sampling involves dividing the population into clusters—often naturally occurring groups such as schools, suburbs, or departments—and then randomly selecting entire clusters to include in the sample. Once selected, all individuals within the chosen clusters (or a random subset of them) are surveyed. This approach is cost-effective for large or geographically spread populations, though it may introduce more variability because people within a cluster tend to be similar to one another.
+
+### Stratified Sampling
+
+Stratified sampling divides the population into meaningful subgroups (called strata), such as age groups, income brackets, or geographic regions. A random sample is then drawn from each stratum. This method ensures that all key subgroups are represented, often improving precision compared with simple random sampling. Stratified sampling is particularly useful when researchers want to compare outcomes across specific categories or when certain groups are very small but important.
+
+## Sampling Distributions
+
+So far we’ve been talking about a *population* in a fairly intuitive way – for example, all firms listed on the ASX, all households in Victoria, or all daily returns for a particular stock. That’s how an applied researcher in business, finance, or economics naturally thinks: the population is a real collection of economic units “out there in the world”.
+
+Statisticians, however, like to take one extra step towards abstraction. For them, it’s often more convenient to think of a population not as a big spreadsheet of actual values, but as a **probability distribution** that could, in principle, have generated those values. This is similar to how we might think of a data-generating process in econometrics.
+
+For example, suppose we are interested in weekly returns on a particular share index. To an applied researcher, the population might mean “all weekly returns over an infinite horizon” or “all weeks in some long-run stable period.” A statistician operationalises this by saying: assume the returns follow some probability distribution with certain characteristics – for example, a mean return of $0.2\%$ per week and a standard deviation of $2\%$ per week, perhaps approximated by a normal distribution.
+
+Those underlying numerical characteristics – the true mean, the true variance, the true proportion, and so on – are called **population parameters**. We typically denote them by Greek letters, for example:
+
+-   population mean: $\mu$
+-   population standard deviation: $\sigma$
+
+Now imagine you run a study: you take a random sample of 200 weeks of returns and compute the sample mean and sample standard deviation. You might find a sample mean of $0.18\%$ and a sample standard deviation of $2.1\%$. These are **sample statistics**: they are calculated from your data and will vary from one sample to the next.
+
+The important distinction is:
+
+-   **Population parameters**: fixed but unknown numbers (for example, the true long-run mean return), usually denoted by Greek letters.
+-   **Sample statistics**: numbers you can actually compute from your sample (for example, the sample mean), usually denoted by Latin letters such as $\bar{X}$ and $s$.
+
+In practice, we observe statistics and try to infer parameters. Much of this chapter is about how we use sample statistics to estimate population parameters and how uncertain those estimates are.
+
+### The law of large numbers
+
+In the previous discussion, we saw that with a sample of moderate size, our sample mean might be “in the right ballpark” but not exactly equal to the population mean. A natural question for any business analyst or econometrician is:
+
+> If I want my sample average to be closer to the true population average, what can I do?
+
+The most obvious answer is: **collect more data**.
+
+To see why this works, imagine we are studying monthly sales revenue for a particular retail chain. Suppose the true (but unknown) population mean revenue per month is \$2.5 million. If we sample just 12 months, the sample mean might be \$2.3 million, or \$2.8 million, or something else quite different – because with small samples, random fluctuation matters a lot.
+
+If instead we observe 1,200 months (across many stores or many periods), the sample mean tends to sit much closer to the true $\mu$. This is not just common sense; it is formalised in a fundamental result called the **law of large numbers**.
+
+Informally, the law of large numbers (LLN) says:
+
+> As the sample size $n$ gets larger and larger, the sample mean $\bar{X}$ tends to move closer and closer to the true population mean $\mu$.
+
+More precisely, as $n \to \infty$, then $\bar{X} \to \mu.$
+
+We don’t need the formal proof here, but the implication is extremely important:
+
+-   Any single finite sample will almost always give us a sample mean that is *not* exactly equal to the population mean.
+-   However, if we keep increasing the sample size, the discrepancy between $\bar{X}$ and $\mu$ tends to shrink.
+
+This is the mathematical justification for a belief that every data analyst already holds intuitively: **large samples give more reliable information than small samples**.
+
+The law of large numbers is reassuring, but it’s a “long-run promise”: it tells us what happens as sample size becomes very large. In real business and economic applications, we usually work with **finite** samples: perhaps 80 firms, 200 households, 20 years of quarterly GDP, and so on.
+
+So we need a more detailed understanding of how sample statistics behave for realistic sample sizes. That’s where the ideas of **sampling distributions** and the **central limit theorem** come in.
+
+### Sampling distribution of the mean
+
+Consider a simple experiment. Suppose the monthly log returns on a stock are drawn from some fixed distribution with mean $\mu$ and standard deviation $\sigma$. Now:
+
+1.  You randomly select $n = 5$ months and compute the sample mean return $\bar{X}_1$.
+2.  You repeat the experiment with 5 different months and get another sample mean $\bar{X}_2$.
+3.  You keep going, drawing many fresh random samples of 5 months each, and recording each sample mean.
+
+After doing this, you would have a long list of numbers:
+
+$$
+\bar{X}_1,\ \bar{X}_2,\ \bar{X}_3,\ \dots
+$$
+
+If you make a histogram of these sample means, you get a **sampling distribution of the mean** – the distribution of $\bar{X}$ across repeated samples of the same size from the same population.
+
+Some observations:
+
+-   For $n = 5$, the sample mean is quite volatile from one replication to another.
+-   The sampling distribution is typically centred near the true mean $\mu$, but has noticeable spread.
+-   If we increase the sample size (say to $n = 30$ or $n = 100$), the histogram of sample means becomes more tightly concentrated around $\mu$.
+
+This distribution of sample means is not just a thought experiment: it is a key theoretical tool. It tells us how much variability we should expect in $\bar{X}$ **purely due to sampling**, even when the data-generating process is unchanged.
+
+### Sampling distributions exist for any sample statistic
+
+We’ve focused on the sample mean, but the same idea applies to **any** statistic you might compute repeatedly from new samples:
+
+-   the maximum monthly return in the sample,
+-   the proportion of firms with negative profit,
+-   the sample variance,
+-   regression coefficients, and so on.
+
+For example, suppose that in each replication of our “5 months” experiment, instead of recording the sample mean return, we record the **maximum** monthly return. Repeating this many times and plotting those maxima would give the **sampling distribution of the maximum**.
+
+This distribution will look very different from the sampling distribution of the mean:
+
+-   The maximum of 5 returns will typically be above the population mean.
+-   The shape is often skewed, because extreme values are more likely to appear as the maximum when you draw several observations.
+
+The general lesson is:
+
+> Every statistic you compute from a sample has a sampling distribution that tells you how that statistic would vary across repeated samples of the same size.
+
+Understanding these distributions is at the heart of **statistical inference**.
+
+## The central limit theorem
+
+Now we turn to one of the most important results in statistics: the **central limit theorem (CLT)**. It describes how the sampling distribution of the mean behaves as the sample size increases.
+
+Intuitively, you already know one part of the story: as sample size $n$ increases, the sample mean becomes less variable from sample to sample, so the sampling distribution of the mean becomes **narrower**.
+
+We can formalise this. Suppose the population has mean $\mu$ and standard deviation $\sigma$. Then the sampling distribution of the mean has:
+
+-   mean equal to $\mu$; and\
+-   standard deviation equal to $\sigma / \sqrt{n}$.
+
+This standard deviation of $\bar{X}$ is called the **standard error of the mean (SEM)**. As $n$ grows, $\sigma / \sqrt{n}$ shrinks, so the sampling distribution becomes more concentrated around $\mu$.
+
+The remarkable part of the CLT is about **shape**:
+
+> No matter what the shape of the original population distribution is, as the sample size $n$ becomes large, the sampling distribution of the mean becomes approximately normal.
+
+That is, even if the underlying data are skewed (e.g. income, firm size, or sales distributions), the distribution of $\bar{X}$ is close to normal for reasonably large $n$.
+
+So the CLT tells us that for the sample mean:
+
+-   **Centre:**\
+    $$
+    E[\bar{X}] = \mu
+    $$
+-   **Spread:**\
+    $$
+    SD(\bar{X}) = \frac{\sigma}{\sqrt{n}}
+    $$
+-   **Shape:** approximately normal for large $n$.
+
+This is incredibly useful in business and econometrics because it justifies the widespread use of **normal-based methods** (z-scores, t-tests, confidence intervals, regression inference) even when the raw data are not perfectly normal, as long as the sample size is not tiny.
+
+------------------------------------------------------------------------
+
+### Estimating population parameters
+
+Up to now, we’ve often talked as if the population parameters were known: for example, “suppose returns have mean $\mu$ and standard deviation $\sigma$.” In real data analysis, the exact values of $\mu$ and $\sigma$ are almost never known.
+
+Instead, we:
+
+1.  collect a sample,
+2.  compute sample statistics (like $\bar{X}$ and $s$), and
+3.  treat these as **estimates** of the underlying population parameters.
+
+For example, suppose we collect data on daily returns of a stock over 250 trading days (roughly one year) and compute:
+
+-   sample mean return $\bar{X} = 0.05\%$
+-   sample standard deviation $s = 1.3\%$
+
+We don’t know the true long-run mean and volatility of this stock. But if we had to give a “best guess” for the population mean, we would naturally choose $\bar{X}$. Likewise, we want a good procedure for estimating $\sigma$.
+
+In the rest of this section, we distinguish clearly between:
+
+-   **Sample statistics:** exact numbers computed from the sample.
+-   **Estimators/estimates:** rules and resulting values we use to guess the corresponding population parameters.
+
+------------------------------------------------------------------------
+
+### Estimating the population mean
+
+Let $\mu$ be the true population mean (for example, the long-run average return), and let $\bar{X}$ be the sample mean from a random sample.
+
+A natural estimator of $\mu$ is:
+
+$$
+\hat{\mu} = \bar{X}.
+$$
+
+Here:
+
+-   $\bar{X}$ is the **sample statistic** – a known quantity once we have the data.
+-   $\hat{\mu}$ is the **estimate of the population mean** – conceptually a “best guess” about $\mu$ based on $\bar{X}$.
+
+In simple random sampling, these two numbers coincide: numerically, $\hat{\mu} = \bar{X}$. But conceptually they are different:
+
+-   $\bar{X}$ describes the sample.
+-   $\hat{\mu}$ is a statement about the population.
+
+Why is $\bar{X}$ a good choice as an estimator? Because, as we saw earlier, it is **unbiased**:
+
+$$
+E[\bar{X}] = \mu.
+$$
+
+::: {.callout-note collapse="true"}
+## Click for the mathematical proof
+
+$$
+\begin{aligned}
+\overline{X} 
+&= \frac{1}{n} \sum_{i=1}^{n} X_i 
+   = \frac{1}{n}(X_1 + X_2 + \cdots + X_n) \\[12pt]
+E[\overline{X}]
+&= E\left[ \frac{1}{n} \sum_{i=1}^{n} X_i \right]
+ = \frac{1}{n} \sum_{i=1}^{n} E[X_i] 
+ = \frac{1}{n} \sum_{i=1}^{n} \mu
+ = \frac{n}{n} \mu 
+ = \mu
+\end{aligned}
+$$
+:::
+
+On average across many possible samples, the sample mean hits the right target. That’s exactly what we want from a good estimator.
+
+You can think of it this way for business data: if you repeatedly sampled 100 firms from a very large population and each time computed the sample mean of annual profit, the average over all those sample means would equal the true population mean profit.
+
+### Estimating the population standard deviation
+
+Estimating the population standard deviation $\sigma$ is a bit more subtle.
+
+We know the formula for the sample standard deviation often used in practice:
+
+$$
+s = \sqrt{\frac{1}{n-1} \sum_{i=1}^{n} (X_i - \bar{X})^2},
+$$
+
+and also the version with $n$ in the denominator:
+
+$$
+s_n = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (X_i - \bar{X})^2}.
+$$
+
+::: {.callout-note collapse="true"}
+## Click for the mathematical proof
+
+To derive the variance of $\overline{X}$ mathematically, let’s start by denoting the variance of $X$ as\
+$\mathrm{Var}(X) = \sigma^2$. With a random sample, we can derive the variance of $\overline{X}$ as a function of $\mathrm{Var}(X)$.
+
+$$
+\begin{aligned}
+\mathrm{Var}(\overline{X})
+&= \mathrm{Var}\left( \frac{1}{n} \sum_{i=1}^{n} X_i \right) \\[6pt]
+&= \frac{1}{n^2} \mathrm{Var}\left( \sum_{i=1}^{n} X_i \right) \\[10pt]
+&= \frac{1}{n^2} \left( \mathrm{Var}(X_1) + \mathrm{Var}(X_2) + \cdots + \mathrm{Var}(X_n) \right) \\[10pt]
+&= \frac{1}{n^2} (\sigma^2 + \sigma^2 + \cdots + \sigma^2) \\[6pt]
+&= \frac{1}{n^2} (n \sigma^2) \\[6pt]
+&= \frac{1}{n} \sigma^2
+\end{aligned}
+$$
+
+So:
+
+$$
+\mathrm{Var}(\overline{X}) = \frac{\sigma^2}{n}.
+$$
+
+**N.B.** This result required a *random sample*, so that each $X_i$ is independent of the others.
+
+Dividing by the sample size $n$, a positive value which is generally larger than 1, makes it clear that\
+$\overline{X}$ has a smaller variance than $X$. This makes intuitive sense: averaging a set of values reduces variation.
+
+Putting this all together:
+
+$$
+X \sim N(\mu, \sigma^2) \quad \Longrightarrow \quad 
+\overline{X} \sim N\!\left(\mu,\; \frac{\sigma^2}{n}\right).
+$$
+:::
+
+Which one should we use as an estimator of the population standard deviation?
+
+To understand the issue, imagine extremely small samples. Suppose your sample size is $n = 1$. Then your sample consists of a single observation, say a single firm with profit $X_1 = 2.3$ million.
+
+-   The sample mean is $\bar{X} = 2.3$.
+-   The sample standard deviation (no matter how you define it) is $0$, because all observations equal the mean.
+
+As a **description of the sample**, SD $= 0$ is correct – there is no variation within a single observation. But as an estimate of the population standard deviation, “0” is clearly absurd. We don’t really believe that all firms in the economy have exactly the same profit.
+
+Even when $n = 2$, we get very unstable information about variability. With only two observations (say, profits of 1.8 and 2.8 million), the sample standard deviation tends, on average, to **underestimate** the true variability in the population. Intuitively, with very little data, we haven’t given the population enough opportunity to show us its true spread.
+
+Mathematically, for small samples it turns out that the “naïve” variance
+
+$$
+\frac{1}{n} \sum_{i=1}^{n} (X_i - \bar{X})^2
+$$
+
+is a **biased** estimator of the population variance $\sigma^2$: on average it is too small. The standard fix (which you’ve probably seen in earlier courses) is to divide by $n-1$ instead of $n$:
+
+$$
+s^2 = \frac{1}{n-1} \sum_{i=1}^{n} (X_i - \bar{X})^2.
+$$
+
+This adjusted quantity $s^2$ is an **unbiased estimator** of $\sigma^2$, and the corresponding $s$ is our usual estimator of $\sigma$.
+
+That’s why in software and textbooks you almost always see the denominator $n-1$ for variance and standard deviation: it corrects the systematic downward bias that occurs if we divide by $n$.
+
+Conceptually, it’s worth keeping the roles clear:
+
+-   The **sample standard deviation** as a description of the sample’s spread would naturally use division by $n$.
+-   The **estimated population standard deviation** uses division by $n-1$ because that produces an estimator whose expected value equals the true $\sigma$.
+
+In practice, people often blur this distinction and casually refer to “the sample standard deviation” when they actually mean the $n-1$ version (the estimator of $\sigma$). For most applied work in business and econometrics, this imprecision in language is not a major problem, as long as you remember:
+
+> You are almost always using the version that is designed to **estimate the population standard deviation**, not merely to describe the sample.
+
+## Confidence intervals
+
+So far, we have focused on **point estimation**: using a single number such as $\hat{\mu} = \bar{X}$ as our best guess for the population mean $\mu$. In practice, though, every business analyst and econometrician knows that a single number never tells the full story. We also want to know **how uncertain** that estimate is.
+
+This is where **confidence intervals** come in. Instead of reporting just a point estimate, we report a **range of plausible values** for the population mean, based on our sample and a chosen level of confidence (often 95%).
+
+### The basic idea
+
+Suppose we have a random sample of size $n$ from a population with mean $\mu$ and standard deviation $\sigma$, and we compute the sample mean $\bar{X}$. We know:
+
+-   $\bar{X}$ is centred around $\mu$.
+-   The standard deviation of $\bar{X}$ (its standard error) is $$
+    SE(\bar{X}) = \frac{\sigma}{\sqrt{n}}.
+    $$
+
+Because of the central limit theorem, for reasonably large $n$ the sampling distribution of $\bar{X}$ is approximately normal. That means we can use the standard normal fact that:
+
+$$
+P(-z_{0.975} \le Z \le z_{0.975}) \approx 0.95,
+$$
+
+where $Z$ is a standard normal variable and $z_{0.975} \approx 1.96$ is the 97.5th percentile of the standard normal distribution.
+
+If $$
+Z = \frac{\bar{X} - \mu}{\sigma / \sqrt{n}},
+$$ then
+
+$$
+P\!\left(
+-1.96 \le \frac{\bar{X} - \mu}{\sigma / \sqrt{n}} \le 1.96
+\right) \approx 0.95.
+$$
+
+Rearranging this inequality to solve for $\mu$ gives
+
+$$
+P\!\left(
+\bar{X} - 1.96 \frac{\sigma}{\sqrt{n}} \le \mu \le
+\bar{X} + 1.96 \frac{\sigma}{\sqrt{n}}
+\right) \approx 0.95.
+$$
+
+This suggests a **95% confidence interval for** $\mu$ of the form
+
+$$
+\bar{X} \pm 1.96 \cdot \frac{\sigma}{\sqrt{n}}.
+$$
+
+Of course, in real life we almost never know $\sigma$, so this is mainly a theoretical starting point.
+
+------------------------------------------------------------------------
+
+### Unknown $\sigma$: using the $t$-distribution
+
+In practice, we replace the unknown population standard deviation $\sigma$ with its estimate $s$. This introduces extra uncertainty, especially for smaller $n$, so instead of using the standard normal distribution we use the **Student** $t$-distribution with $n-1$ degrees of freedom.
+
+The standard error is now estimated as
+
+$$
+SE(\bar{X}) \approx \frac{s}{\sqrt{n}},
+$$
+
+and a $(1 - \alpha)\times 100\%$ confidence interval for $\mu$ becomes
+
+$$
+\bar{X} \pm t_{n-1,\,1-\alpha/2} \cdot \frac{s}{\sqrt{n}},
+$$
+
+where $t_{n-1,\,1-\alpha/2}$ is the critical value from the $t$-distribution with $n-1$ degrees of freedom.
+
+For a 95% confidence interval, we use $t_{n-1,\,0.975}$.
+
+### A business example
+
+Suppose a retailer wants to estimate the **average weekly online revenue**. They collect a simple random sample of $n = 52$ weeks and calculate:
+
+-   sample mean revenue: $\bar{X} = \$410{,}000$
+-   sample standard deviation: $s = \$80{,}000$
+
+The estimated standard error of the mean is
+
+$$
+SE(\bar{X}) = \frac{s}{\sqrt{n}}
+= \frac{80{,}000}{\sqrt{52}}
+\approx 11{,}111.
+$$
+
+With $n = 52$, the degrees of freedom are $51$. The 95% $t$-critical value is approximately $t_{51,\,0.975} \approx 2.01$.
+
+The 95% confidence interval for the population mean weekly revenue is then
+
+$$
+\bar{X} \pm t_{51,\,0.975} \cdot SE(\bar{X})
+= 410{,}000 \pm 2.01 \times 11{,}111.
+$$
+
+So the margin of error is about
+
+$$
+2.01 \times 11{,}111 \approx 22{,}344,
+$$
+
+and the 95% confidence interval is approximately
+
+$$
+[410{,}000 - 22{,}344,\ 410{,}000 + 22{,}344]
+= [387{,}656,\ 432{,}344].
+$$
+
+A sensible way to report this might be:
+
+> We estimate that the true average weekly online revenue lies between \$388k and \$432k, with 95% confidence.
+
+### How to interpret a confidence interval (and how *not* to)
+
+A 95% confidence interval **does not** mean there is a 95% probability that $\mu$ lies in the specific interval you just calculated. The population mean is a fixed (though unknown) number; it either is or is not in that interval.
+
+The correct interpretation is:
+
+> If we were to repeat this entire sampling process many times, and each time construct a 95% confidence interval in exactly the same way, then **about 95% of those intervals would contain the true population mean** $\mu$.
+
+Your particular interval is one of those many possible intervals. You don’t know whether yours is one of the 95% that contain $\mu$ or one of the 5% that miss it, but the method you are using has a 95% “success rate” in the long run.
+
+### Factors that affect the width of a confidence interval
+
+For practical decision-making in business and econometrics, it is useful to understand what controls the width of a confidence interval for the mean:
+
+1.  **Sample size** $n$\
+    The standard error is proportional to $1/\sqrt{n}$.\
+    Larger $n \Rightarrow$ smaller $SE \Rightarrow$ narrower interval.\
+    This is the statistical payoff to collecting more data.
+
+2.  **Variability** $s$ in the data\
+    Higher variability in the underlying data (larger $s$) makes the interval wider.\
+    Highly volatile markets or very heterogeneous firms require larger samples to achieve a given precision.
+
+3.  **Confidence level**\
+    A 99% confidence interval uses a larger critical value than a 95% interval, so it is wider.\
+    There is a trade-off: higher confidence $\Rightarrow$ wider intervals.
+
+In practice, analysts must balance **precision** (narrow intervals) against **costs** of data collection and desired **confidence level**.
+
+### Why confidence intervals matter
+
+Confidence intervals are crucial because they:
+
+-   quantify uncertainty around an estimate,\
+-   allow comparisons across groups (e.g., mean sales in region A vs region B),\
+-   provide a basis for formal hypothesis tests (e.g., does a CI for a mean difference include 0?), and\
+-   communicate results to decision-makers in a more informative way than a single point estimate.
+
+For example, telling a manager that “average weekly revenue is estimated at \$410k” is less informative than saying “we are 95% confident the true average falls between \$388k and \$432k.” The interval directly conveys both **magnitude** and **uncertainty**, which is exactly what good business and econometric analysis should aim to provide.
+
+## Excel
+
+Below we walk through how to use the ToolPak to generate descriptive statistics—including Excel’s estimate of the mean, standard deviation, and a confidence level for the mean—and how to convert those results into a confidence interval. Begin by downloading the data file below and then follow the instructions by navigating through the screenshots.
+
+<center>
+
+```{r}
+library(downloadthis)
+download_file(
+  path = "data/Salary.xlsx",
+  button_label = "Salary",
+  button_type = 'success'
+)
+```
+
+</center>
+
+::: panel-tabset
+#### 1
+
+Switch to the **Data** tab and select **Data Analysis**. Select **Descriptive Statistics** and enter in the input range, select labels, output location, and make sure to select "summary statistics" and "confidence level." By default the confidence level is set at 95%, and we can adjust this as needed.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 3/04.Excel-01.png")
+```
+
+#### 2
+
+The summary statistics will provided us with confidence levels (this is like the margin of error) in the table. To obtain confidence intervals we subtract and add this confidence level from the mean. See the screenshot below.
+
+we can adjust this as needed.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 3/04.Excel-02.png")
+```
+:::
+
+## Summary
+
+This chapter introduced the core ideas behind statistical inference—how we use information from a sample to draw conclusions about a larger population. We began by distinguishing between population parameters (the true values we care about) and sample statistics (the values we calculate from data). Because we almost never observe an entire population, our conclusions always involve some degree of uncertainty, and our samples must be collected carefully to avoid bias. Real-world examples, such as political polling errors and famous case studies like Pearl’s TB research and Wald’s aircraft analysis, showed how flawed sampling methods can lead to misleading or even completely incorrect conclusions.
+
+We also explored the behaviour of sample statistics across repeated sampling through the idea of sampling distributions. The law of large numbers tells us that larger samples tend to produce more accurate estimates, while the central limit theorem explains why the sample mean is approximately normally distributed even when the population is not. These results justify many of the common inferential tools used in business, economics, and data analysis.
+
+Finally, we introduced the concept of estimating population parameters, including why the sample mean is an unbiased estimator of the population mean and why the $n-1$ version of variance is used to estimate the population standard deviation. We concluded with confidence intervals, which provide a practical way to express uncertainty by giving a range of plausible values for the population mean rather than a single point estimate.
+
+## Exercises
+
+:::: callout-note
+## Question 1
+
+Explain briefly why voluntary participation is an unreliable way to collect a sample to be used for estimation.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+The aim of a sample is to be representative of the population, so that same estimates are unbiased estimates of population parameters. Voluntary participation will likely mean certain types of people are more likely to respond, and these types may represent one set of views in the survey, not representative of the whole population.
+:::
+::::
+
+:::: callout-note
+## Question 2
+
+Explain the idea of a biased sample and a representative sample, and discuss whether this method of taking a sample is appropriate.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+A biased sample is one that is chosen so that it does not represent the characteristics of the population. It is called biased because some characteristics may be over-represented, others missing. A representative sample reflects the characteristics of the population well. This method is appropriate because it is based on a random sample of claims, meaning it should be representative.
+:::
+::::
+
+:::: callout-note
+## Question 3
+
+If you wanted a 99% confidence interval instead of a 95% confidence interval, would it be wider or narrower? Explain your reasoning.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+99% is wider, because we need to have a more conservative range, to give greater certainty that the true value is in that interval.
+:::
+::::
+
+:::: callout-note
+## Question 4
+
+The 95% confidence interval for mean is given by the following formula:
+
+$$
+\bar{X} - t \cdot \frac{s}{\sqrt{n}}
+\quad \text{to} \quad
+\bar{X} + t \cdot \frac{s}{\sqrt{n}}
+$$
+
+a.  Use the formula to explain what happens to my confidence interval if I am able to get more data and my sample doubles in size.
+b.  Imagine somehow that the population standard deviation was known instead of having to be estimated. What would change in the confidence interval formula, and would my interval be narrower or wider?
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+a.  When n doubles: bottom line of the s/sqrt(n) is bigger, so the whole expression is smaller, so the interval is narrower. This makes sense: more data, estimate more accurately, and hence can get same level of confidence with a narrower interval.
+b.  Replace t with normal distribution value, and Z value is smaller than t, so interval gets narrower. This makes sense – less uncertainty, narrower interval for same level of confidence. Also replace s (sample SD) with σ (population SD).
+:::
+::::
+
+:::: callout-note
+## Question 5
+
+This question uses data from a numeracy test performed with Secondary School students in Timor-Leste in 2019. The data can be found in the “Test Data” sheet.
+
+<center>
+
+```{r}
+library(downloadthis)
+download_file(
+  path = "data/Topic 3 Practice Exercises Data.xlsx",
+  button_label = "Test Data",
+  button_type = 'success'
+)
+```
+
+</center>
+
+------------------------------------------------------------------------
+
+More than 1,800 students were tested across 60 schools, with around 30 students per school. The schools were randomly chosen, and then 30 students were randomly chosen from the class lists of Grade 8 and 9 students enrolled at the school. Independent researchers then supervised the tests with those 30 students. The numeracy test comprised 19 questions. A range of other information was also collected from each child, including family income and parents’ education. Let us consider the data on family income.
+
+Use Excel to get the descriptive statistics for the monthly family income per person for the full dataset, then answer the following questions:
+
+a.  Calculate a 95% confidence interval for the mean income per person. Interpret that interval in everyday language.
+b.  In this case, the confidence interval you calculated will turn out to be very narrow. What does this say about the accuracy of your estimate? Knowing how confidence intervals are calculated, what is the main reason the interval is so narrow in this case?
+c.  The Official Poverty Line for Timor-Leste is \$57 per person per month. Is it valid to use a poverty rate calculated from this particular sample as an estimate of the poverty rate for the whole country? Explain your logic – think carefully about who the sample used in this study includes.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+a.  70.96 - 1.24, to 70.96 + 1.24. This is \$69.72 to \$72.20. We are 95% sure that the true average monthly family income per person is between \$69.72 and \$72.20.
+b.  It is a very accurate estimate. The accuracy depends on standard deviation (s) and sample size (n). Standard deviation is not that small (\$27), but it’s a huge sample of 1838 people (n), so this allows us to get a very accurate estimate.
+c.  Not strictly valid, as this sample only comprises household with children in Grade 8 or 9. So, for example, households with only young children would not be included. So, the sample does not represent all households in the country.
+:::
+::::
+
+:::: callout-note
+## Question 6
+
+This question uses real data from Timor-Leste looking at children's heights. The dataset has data on almost 9000 children in Timor-Leste aged between 0 and 5 years old. Each row of the table provides information on one child.
+
+The following statistics relate to the heights of mothers of the children in the sample.
+
+```{r}
+library(flextable)
+
+df_mum <- data.frame(
+  Statistic = c(
+    "Mean", "Standard Error", "Median", "Mode", "Standard Deviation",
+    "Sample Variance", "Kurtosis", "Skewness", "Range",
+    "Minimum", "Maximum", "Sum", "Count",
+    "Confidence Level (95%)"
+  ),
+  mum_height = c(
+    150.8304, 0.057403, 150.65, 149.5, 5.390395,
+    29.05636, 1.741754, 0.353652, 74.39999,
+    124.5, 198.9, 1330022, 8818, 0.112524
+  )
+)
+
+flextable(df_mum)
+```
+
+The formula for confidence intervals for the mean is given here:
+
+$$
+\bar{X} - t \cdot \frac{s}{\sqrt{n}}
+\quad \text{to} \quad
+\bar{X} + t \cdot \frac{s}{\sqrt{n}}
+$$
+
+Use this output to construct a 95% confidence interval for the average height of mothers of young children, and give a technical interpretation of this interval, based on the theory of repeated samples. Also refer to the formula for confidence intervals to explain why this interval is very narrow in this case.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+Interval: 150.83 - 0.11 to 150.83 + 0.11, so 150.72cm to 150.94cm
+
+If we took many samples of size 8818 from the population of all mothers, and calculated a 95% confidence interval for each using the method above, we would find that 95% of these intervals would contain the true mean height. So, we can conclude that there is a 95% chance that this interval contains the true mean height. i.e. We are 95% confident the true mean height for mothers is between 150.72cm and 150.94cm.
+
+The interval is narrow mainly because of the large sample size, n = 8818. The formula requires dividing by sqrt(n), so a large n will mean we divide by a big number, making the interval narrower. This makes intuitive sense: if you have a big sample, you can estimate the mean more accurately, as you have more data on which to base the estimate
+:::
+::::
+
+:::: callout-note
+## Question 7
+
+For this exercise use the sheet "Timor-Leste". This dataset represents a census – a list of all the households in this particular village. Suppose we want to find out more about the characteristics of households in this village, but do not have the budget to re-interview everyone – we want to take a sample that is representative of the whole population. How do we take a representative sample (of say, 50 households) from this list (population) of households?
+
+a.  Use Excel's random number generator to take a 'good' (i.e. random) sample of size 50 of this population.
+b.  Also, think of some 'bad' (i.e. non-random) ways of taking a sample.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+There are a few ways we could approach this, some a lot better than others:
+
+1.  Take the first 50 households?
+
+In this case, taking ('sampling') the first 50 households in the list would produce a particularly BIASED sample. Why? Take a look at the characteristics of the first 50 households in the spreadsheet. Household ID is a unique identifier – just a number – allocated to the household. But it turns out that this was essentially the order in which households were interviewed. Imagine the census interviewer arriving in the village, interviewing house by house. Looking at the "Time to Road" column, the interviewer clearly started interviewing along the main road. So, if we were to take the first 50 households, we would essentially be taking the 50 households close to the main road. And we know that those on the main road are quite different to those who do live away from it (much more likely to have electricity, for example).
+
+2.  Take Every j'th House?
+
+This is an approach that is often used in practice, as it can be administered easily. We have 374 households in this village, so selecting every 7-8th house (374/50=7.5) will give us 50. If there is some kind of systematic ordering of the data, this method will not produce a representative sample.
+
+3.  Use a Random Number Generator
+
+Excel can be used to draw a random sample. There are a few ways of doing this in Excel; we will use the random number generator in the Data Analysis Toolpak. The process for drawing a random sample of 50 households from our population of 374 is as follows: we assign each household a number randomly. What is important is that each household (row in our spreadsheet) has equal chance of being selected. Once each household has been assigned a number, we rank (sort) households based on their number, smallest to largest. The top 50 households in the list become our sampled households.
+:::
+::::

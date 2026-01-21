@@ -1,0 +1,764 @@
+---
+title: "Models of relationships between data"
+---
+
+```{r, include=FALSE}
+library(tidyverse)
+library(flextable)
+library(webexercises)
+```
+
+::: callout-note
+## Learning Objectives
+
+By the end of this chapter, you should be able to:
+
+1.  Explain what a statistical model is and why models are used to represent relationships between variables.
+2.  Define and interpret covariance as a measure of how two variables move together.
+3.  Calculate and interpret correlation, including distinguishing the direction and strength of linear relationships.
+4.  Explain why correlation does not imply causation, and recognise situations where relationships may be misleading.
+5.  Describe and interpret the simple linear regression model, including the roles of the slope and intercept.
+6.  Carry out basic regression calculations by hand and explain what the fitted line represents.
+7.  Understand the purpose of multiple regression and recognise that it is an extension of simple regression that will be explored in more depth in the next two weeks.
+:::
+
+<center>
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Covers/cover4.png")
+```
+
+</center>
+
+## Introduction
+
+Statistics is fundamentally about making sense of data. At its core, modern statistics blends art and science to help us extract meaningful patterns, uncover relationships, and generate useful predictions. One of the primary ways we do this is through models—simplified representations of complex real-world processes.
+
+Whenever we analyse data to answer a question, solve a problem, or understand a system, we are implicitly or explicitly building a model. And although statistical models may sound technical, the idea of modelling is something we all practice constantly. Every time we interpret information, anticipate what might happen next, or make a decision based on past experience, we are relying on informal mental models of the world.
+
+To illustrate, imagine a team of designers developing a new smartphone. They would never jump straight into manufacturing without planning. Instead, they study existing phones, gather data on battery performance, screen durability, camera quality, and user behaviour, and then construct a prototype. The prototype is not a perfect replica of the final product, but a simplified version that captures the essential features. It can then be tested—perhaps by running stress tests or user trials—to predict how the final device will perform in real-world conditions.
+
+<center>![](images/Chapter%204/01.Models-01.png)</center>
+
+<br>
+
+In statistics, this same idea appears in the concept of model fit: how well a model represents the patterns in the data.
+
+A well-fitting model behaves much like the real system, producing reliable predictions. A moderately fitting model captures some aspects of reality but misses others, leading to weaker predictions. A poorly fitting model bears little resemblance to the real world and provides unreliable or misleading results.
+
+This concept is just as important in business and economics. Consider a company using historical sales data (2017–2020) to forecast sales for 2021. A model that simply predicts the average of past sales ignores trends and seasonality (Model 1) — clearly a poor fit. A trending-only model (Model 2) improves slightly but still misses seasonal peaks. A model that incorporates both trend and seasonal patterns fits the data more closely and produces more credible forecasts.
+
+<center>![](images/Chapter%204/01.Models-02.png)</center>
+
+<br>
+
+These examples emphasise a key insight: a model is only as useful as its ability to reflect the underlying data-generating process.
+
+In the chapters ahead, we will gradually work our way toward the most fundamental and widely used statistical modelling tool: linear regression. Before we get there, we first need a solid understanding of how to model relationships between variables, how to assess model fit, and how to use models responsibly to answer questions about the world.
+
+## Covariance and Correlation
+
+So far we’ve talked about how to summarise a *single* variable. In practice, though, we are usually interested in how **two variables move together**. Do people who spend more time on TikTok also spend more money online? Do higher advertising budgets go hand-in-hand with higher sales? To answer questions like these we need tools that describe relationships between variables, not just each variable on its own. :contentReference[oaicite:0]{index="0"}
+
+### A motivating example
+
+Imagine a participant, Charles, who is taking part in a marketing study. At the start of each week, researchers assign him a certain number of hours of marketing videos to watch. Over the same week they record:
+
+-   how much money he spends on online shopping; and\
+-   how many minutes of exercise he does.
+
+Across several weeks a pattern emerges:
+
+<center>![](images/Chapter%204/02.Covariance-01.png)</center>
+
+<br>
+
+-   In weeks with **more marketing**, Charles tends to **spend more online**.
+-   In those same weeks, he tends to **exercise less**.
+
+If we plot “time spent watching marketing videos” against “amount spent online”, the points slope upwards: large values of one tend to go with large values of the other. If we instead plot “time spent watching marketing videos” against “exercise minutes”, the points slope downwards: large values of one tend to go with small values of the other.
+
+What we are noticing informally is that *some pairs of variables rise and fall together, while others move in opposite directions*. We now want a numerical measure that captures this idea.
+
+### What is covariance?
+
+**Covariance** is a measure of how two variables vary *jointly* around their means. For two variables $X$ and $Y$ measured on the same $n$ individuals, the sample covariance is
+
+$$
+\operatorname{Cov}(X,Y)
+= \frac{1}{n-1} \sum_{i=1}^{n}
+\bigl(x_i - \bar{x}\bigr)\bigl(y_i - \bar{y}\bigr).
+$$
+
+The logic mirrors the variance:
+
+-   For variance, we take deviations from the mean $(x_i - \bar{x})$, square them, and average to see how a *single* variable spreads around its mean.
+-   For covariance, we multiply **paired deviations**\
+    $(x_i - \bar{x})(y_i - \bar{y})$ and average them to see whether the two variables wander away from their means **in the same direction or in opposite directions**.
+
+This leads to three broad possibilities:
+
+-   **Positive covariance**: when $x_i$ is above $\bar{x}$, $y_i$ also tends to be above $\bar{y}$; when one is below its mean, the other tends to be below as well. The product of deviations is mostly positive, so the average is positive. In Charles’ case, “time watching marketing videos” and “online spending” have **positive covariance**.
+-   **Negative covariance**: when $x_i$ is above $\bar{x}$, $y_i$ tends to be below $\bar{y}$, and vice versa. Products of deviations are mostly negative, giving a negative covariance. This describes the relationship between Charles’ “time watching marketing videos” and his “exercise minutes”.
+-   **Covariance near zero**: there is no consistent pattern; sometimes the deviations have the same sign, sometimes opposite, and they cancel out on average. In that case the variables are said to have (approximately) **no linear relationship**.
+
+::: callout-note
+## A worked example - Positive Covariance
+
+In the example below, each pair is moving in the same direction relative to their means, i.e. negative-negative, positive-positive. When this is applied to the formula, we obtain a positive covariance.
+
+<center>![](images/Chapter%204/02.Covariance-02.png)</center>
+:::
+
+::: callout-note
+## A worked example - Negative Covariance
+
+In this example, most of the pairs are moving in opposite directions, e.g. negative-positive, positive-negative. When this is applied to the formula, we receive a negative covariance.
+
+<center>![](images/Chapter%204/02.Covariance-03.png)</center>
+:::
+
+A useful way to think about covariance is:
+
+> Are high values of $X$ paired with high values of $Y$ (positive), low values of $Y$ (negative), or a bit of both (around zero)?
+
+### Why raw covariance is hard to interpret
+
+Covariance is excellent for telling us the **direction** of a relationship, but much less helpful for telling us the **strength** of that relationship.
+
+The problem is that covariance depends on the **units** of measurement:
+
+-   If online spending is measured in **dollars**, the covariance might be $42.5$.
+-   If we re-express the same spending in **cents**, every spending value is multiplied by 100, and the covariance is multiplied by 100 as well (e.g. $4250$).
+
+The underlying relationship between time and spending has not changed at all, but the numerical value of the covariance has. There is no natural upper or lower bound, and so it is difficult to look at a covariance of, say, $150$ and know whether that is “large” or “small”. We need a standardised version.
+
+### From covariance to correlation
+
+To obtain a measure that is independent of units, we **standardise** the covariance by dividing by the standard deviations of each variable:
+
+$$
+r_{XY} =
+\frac{\operatorname{Cov}(X,Y)}{s_X s_Y},
+$$
+
+where $s_X$ and $s_Y$ are the sample standard deviations of $X$ and $Y$. This standardised measure is the **correlation coefficient**.
+
+Some key properties of the correlation coefficient:
+
+-   It always lies between $-1$ and $+1$.
+-   The **sign** (positive or negative) tells us the **direction** of the relationship, just like covariance.
+-   The **magnitude** tells us the **strength** of the linear relationship:
+    -   values near $\pm 1$: very strong linear relationships;
+    -   values near 0: weak or no linear relationship.
+-   Because it is unit-free, a correlation of $0.8$ means the same “strength” whether we measure income in dollars or euros, or height in centimetres or inches.
+
+Visually, if we plot $X$ and $Y$ in a scatterplot:
+
+-   correlations close to $+1$ produce points that hug an upward-sloping straight line;
+-   correlations close to $-1$ hug a downward-sloping line;
+-   correlations near 0 produce a diffuse cloud with no obvious linear pattern.
+
+<center>![](images/Chapter%204/03.Correlation.png)</center>
+
+::: callout-note
+## A worked example - Correlation
+
+To illustrate how correlation is computed, consider the following 10 paired observations for variables $X$ and $Y$:
+
+| $i$ | $x_i$ | $y_i$ |
+|----:|------:|------:|
+|   1 |    12 |    10 |
+|   2 |    15 |    14 |
+|   3 |     9 |    11 |
+|   4 |    18 |    16 |
+|   5 |    11 |     9 |
+|   6 |    20 |    19 |
+|   7 |    14 |    13 |
+|   8 |     7 |     8 |
+|   9 |    16 |    15 |
+|  10 |    10 |     9 |
+
+**Step 1 — Compute the means**
+
+$$
+\bar{x} = \frac{1}{10}\sum_{i=1}^{10} x_i = \frac{12+15+9+18+11+20+14+7+16+10}{10} = 13.2
+$$
+
+$$
+\bar{y} = \frac{1}{10}\sum_{i=1}^{10} y_i = \frac{10+14+11+16+9+19+13+8+15+9}{10} = 12.4
+$$
+
+**Step 2 — Compute deviations from the mean**
+
+For each pair:
+
+$$
+dx_i = x_i - \bar{x}, \qquad dy_i = y_i - \bar{y}
+$$
+
+We also compute the product $dx_i \cdot dy_i$:
+
+| $i$ | $dx_i$ | $dy_i$ | $dx_i dy_i$ |
+|----:|-------:|-------:|------------:|
+|   1 | $-1.2$ | $-2.4$ |      $2.88$ |
+|   2 |  $1.8$ |  $1.6$ |      $2.88$ |
+|   3 | $-4.2$ | $-1.4$ |      $5.88$ |
+|   4 |  $4.8$ |  $3.6$ |     $17.28$ |
+|   5 | $-2.2$ | $-3.4$ |      $7.48$ |
+|   6 |  $6.8$ |  $6.6$ |     $44.88$ |
+|   7 |  $0.8$ |  $0.6$ |      $0.48$ |
+|   8 | $-6.2$ | $-4.4$ |     $27.28$ |
+|   9 |  $2.8$ |  $2.6$ |      $7.28$ |
+|  10 | $-3.2$ | $-3.4$ |     $10.88$ |
+
+Sum of products:
+
+$$
+\sum dx_i dy_i = 127.08
+$$
+
+**Step 3 — Compute the sum of squared deviations**
+
+For $X$:
+
+$$
+\sum dx_i^2 =
+(-1.2)^2 + (1.8)^2 + \cdots + (-3.2)^2 = 149.6
+$$
+
+For $Y$:
+
+$$
+\sum dy_i^2 =
+(-2.4)^2 + (1.6)^2 + \cdots + (-3.4)^2 = 112.4
+$$
+
+**Step 4 — Compute the correlation**
+
+Correlation is defined as:
+
+$$
+r =
+\frac{\sum (x_i - \bar{x})(y_i - \bar{y}) }
+{\sqrt{\sum (x_i - \bar{x})^2 } \;
+ \sqrt{\sum (y_i - \bar{y})^2 }}
+$$
+
+Substituting:
+
+$$
+r =
+\frac{127.08}{\sqrt{149.6} \, \sqrt{112.4}}
+$$
+
+Compute denominators:
+
+$$
+\sqrt{149.6} = 12.228,
+\qquad
+\sqrt{112.4} = 10.602
+$$
+
+Thus:
+
+$$
+r = \frac{127.08}{12.228 \times 10.602}
+$$
+
+$$
+r = \frac{127.08}{129.62} \approx 0.98
+$$
+
+**Interpretation**
+
+-   The correlation $r = 0.98$ indicates a **very strong positive linear relationship** between $X$ and $Y$.
+-   Almost all the variation in one variable corresponds to variation in the other.
+-   This example demonstrates how correlation is simply a *standardised* version of covariance, built from deviations from the mean and scaled by the spread of each variable.
+:::
+
+### Correlation Does Not Imply Causation
+
+A correlation tells us **how strongly two variables move together**, but it tells us *nothing* about why they move together or whether changes in one variable cause changes in the other.\
+Many students (and many adults!) fall into the trap of assuming that a strong correlation means one variable **causes** the other. This is often incorrect and can lead to misleading conclusions.
+
+#### What causation actually means
+
+Causation reflects an **if–then** relationship:
+
+-   *If* X happens, *then* Y becomes more likely.
+
+Importantly, this is *probabilistic*, not absolute.\
+For example:
+
+-   *If* athletes use steroids, *then* their muscle mass **increases the chances of** improving.\
+    This does not mean every athlete will necessarily experience the same effect.
+
+We express causal claims using language like *“increases the likelihood of”*, precisely because real-world data always contain variability.
+
+#### Why strong correlations can mislead us
+
+It is possible for two variables to move together simply because a **third factor** influences both.
+
+A classic example: Ice-cream sales and drownings both rise over summer. When graphed together, the relationship looks compelling—high sales coincide with more drownings.
+
+<center>![](images/Chapter%204/04.Correlation-02.png)</center>
+
+However:
+
+-   Eating ice-cream does **not** cause drowning.
+-   Both trends are caused by a lurking variable: **temperature**.\
+    Warm weather increases both swimming activity *and* ice-cream consumption.
+
+<center>![](images/Chapter%204/04.Correlation-03.png)</center>
+
+The key lesson is simple:
+
+> **Just because two things move together does not mean one causes the other.**
+
+This principle is essential before we introduce regression modelling.
+
+## Simple Linear Regression
+
+Correlation summarises a relationship numerically, but regression provides a **model** of that relationship.\
+Simple linear regression is the most widely used statistical modelling framework for understanding how one variable predicts another.
+
+### The basic regression model
+
+Simple linear regression models a dependent variable $Y$ as a straight-line function of one predictor $X$:
+
+$$
+\hat{Y} = b_0 + b_1 X
+$$
+
+Where:
+
+-   $b_0$ = *intercept* (predicted value of $Y$ when $X = 0$)
+-   $b_1$ = *slope*, describing how much $Y$ changes for a one-unit change in $X$
+
+<center>![](images/Chapter%204/05.Regression-01.png)</center>
+
+The regression line is chosen to come as close as possible to all the points in a scatterplot. In this sense, it is the “best fitting” straight-line model for the data.
+
+### A worked example
+
+Suppose we had some data relating to number of close friends and measured depression for 10 people.
+
+```{r}
+df1 <- data.frame(
+  N_Friends = c(8,1,5,10,5,8,6,5,6,10),
+  Depression = c(2,9,4,3,5,4,3,5,4,1)
+) 
+
+df1 |> 
+  regulartable() |> 
+  autofit()
+```
+
+We can visualise this data by pairing each observation:
+
+```{r}
+ggplot(df1, aes(N_Friends, Depression)) +
+  geom_point() +
+  theme_bw() +
+  xlab("Number of Friends") +
+  scale_x_continuous(breaks = seq(0,10,1)) +
+  scale_y_continuous(breaks = seq(0,12,2))
+```
+
+Using linear regression, we can construct a **model** that fits this data. This is a time-consuming process so it'd standard practice to use software to perform this task for us. However, I have also provided the mathematical formulas below so that you are familiar with the steps as well.
+
+::: callout-note
+## Simple linear regression
+
+![](images/Chapter%204/05.Regression-02.png)
+:::
+
+From the model above:
+
+-   The slope $b_1 = -0.71$:\
+    **For each additional friend, depression score decreases on average by 0.71 points.**\
+-   The negative slope implies an inverse relationship: more friends → lower depression.
+
+However, even with a clear model, we must remember:\
+**This is still correlational data, not causal evidence.**
+
+## Extending to Multiple Regression
+
+Simple regression uses one predictor. But most real-world outcomes are influenced by *many* variables.\
+Multiple regression extends the simple model by including more predictors: :contentReference[oaicite:7]{index="7"}
+
+$$
+\hat{Y} = b_0 + b_1 X_1 + b_2 X_2 + \cdots + b_k X_k
+$$
+
+This allows us to:
+
+-   control for additional variables,
+-   isolate the effect of each predictor,
+-   improve prediction accuracy,
+-   and reduce the risk of misleading correlations caused by omitted variables.
+
+### Example: Predicting income
+
+Suppose we have some data on worker's: (1) years of education and (2) age, and we want to build a regression model for **income**:
+
+$$
+\hat{\text{Income}} = b_0 + b_1 \text{Education} + b_2 \text{Age}
+$$
+
+And suppose we have used software to determine our $b$ coefficients as:
+
+$$
+\hat{\text{Income}} = -117{,}110 + 4540(\text{Education}) + 3368(\text{Age})
+$$
+
+In the model above, the $b$ coefficient for education is
+
+$$b_1=4540$$
+
+This means that for each additional year in education, income increases by \$4540, when we **hold all other variables constant**.
+
+This is like saying, if you take two people of the same age (i.e. **holding age constant**), but have one unit of difference in education, then the predicted difference in income would:
+
+::: panel-tabset
+#### 1 unit difference
+
+The difference in the predictions for the two people (\$76,21 - \$72,081 = \$4,450) is equal to the b coefficient for education:
+
+<center>![](images/Chapter%204/05.Regression-03.png)</center>
+
+#### 2 unit difference
+
+The difference in the predictions for the two people (\$81,161 - \$72,081 = \$9,080) is equal to the 2 x b coefficient for education:
+
+<center>![](images/Chapter%204/05.Regression-04.png)</center>
+:::
+
+## Excel
+
+In this section we will learn how to use Microsoft Excel to solve some of the concepts covered in this chapter. Begin by downloading the data file below and then follow the instructions by navigating through the screenshots.
+
+<center>
+
+```{r}
+library(downloadthis)
+download_file(
+  path = "data/Spending.xlsx",
+  button_label = "Amount Spent",
+  button_type = 'success'
+)
+```
+
+</center>
+
+<br>
+
+Scatter plots are one of the most useful tools for exploring relationships between two numerical variables. Each point on the plot represents an individual observation, with its position determined by the values of the two variables being compared. By looking at the overall pattern of points, we can quickly identify whether the relationship appears positive, negative, or unrelated, and whether it is roughly linear or more curved. Scatter plots also help reveal clusters, unusual observations, or potential outliers that may influence further analysis. Because they provide an immediate visual sense of how two variables move together, scatter plots are the natural starting point before calculating numerical measures such as covariance, correlation, or fitting a regression model.
+
+### Scatter plots
+
+::: panel-tabset
+#### 1
+
+Suppose we wanted to generate a scatter plot to visualise the relationship between Time and Amount spent. Begin by highlighting these two columns.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 4/07.Excel - Correlation-01.png")
+```
+
+#### 2
+
+Switch to the Insert tab, select **Insert Scatter or Bubble**, then choose **Scatter**.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 4/07.Excel - Correlation-02.png")
+```
+
+#### 3
+
+After the chart has been generated, click on the + icon next to the chart and select Axis titles. You should enter in the variable names as your axis titles.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 4/07.Excel - Correlation-03.png")
+```
+
+#### 4
+
+It's also useful to add a trendline.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 4/07.Excel - Correlation-04.png")
+```
+
+#### 5
+
+Practice creating the following scatter plots:
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 4/07.Excel - Correlation-05.png")
+```
+:::
+
+### Correlation (Excel formulas)
+
+Excel's `CORREL` function is a quick way to obtain the correlation coefficient between two variables. In the screenshot below, the function is used to calculate the correlation between:
+
+1.  Time and Amount Spent
+2.  Height and Amount Spent
+3.  Exercise and Amount Spent
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 4/07.Excel - Correlation-07.png")
+```
+
+### Correlation (Data ToolPack)
+
+You can also use Excel's Data Analysis ToolPack to determine the correlation coefficient between variables. This is particularly useful if you would like to compute several correlations at the same time.
+
+::: panel-tabset
+#### 1
+
+**Optional**: I like to put the main variable in the first column (here I've moved Amount spent to Column A). This doesn't change the results, it just places the variables in different positions.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 4/08.Excel - Correlation Matrix-01.png")
+```
+
+#### 2
+
+Switch to the **Data** tab, select **Data Analysis** then choose **Correlation**. From there, select the data (here we're choosing all 4 variables).
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 4/08.Excel - Correlation Matrix-02.png")
+```
+
+#### 3
+
+This will produce a **correlation matrix** that tells us what the correlation coefficient is for each pair. For example, the correlation between height and Amount spent is 0.049; the correlation between Time and Amount spent is 0.783, etc.
+
+**Note**: Correlation matrixes are useful when you want to display 2 or more correlation coefficients. if you're only displaying 1 correlation coefficient, it's not efficient (and not recommended) to use a matrix.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 4/08.Excel - Correlation Matrix-03.png")
+```
+:::
+
+### Simple Linear Regression
+
+You can use Excel's Data Analysis ToolPack to quickly run regression models for your data. Suppose we would like to create a model for `Amount Spent` using only `Time` as a predictor:
+
+::: panel-tabset
+#### 1
+
+Switch to the **Data** tab, select **Data Analysis** and choose **Regression**. From there, specify your input Y (here: Amount Spent, so cells D1 to D42) and input X (here: Time, cells B1 to B42) ranges. Make sure "Labels" is selected, and specify your output range.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 4/09. Simpler Reg-01.png")
+```
+
+#### 2
+
+Excel will generate several tables (more on these next week). For now, we're just interested in last table, which will allow us to determine the regression model.
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 4/09. Simpler Reg-02.png")
+```
+:::
+
+### Multiple Linear Regression
+
+::: panel-tabset
+#### 1
+
+We will use the same steps as Simple Linear Regression, excep when it comes to specifying the Input X range, we're going to select columns A to C (which indicates 3 different variables)
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 4/10. MultipleReg-01.png")
+```
+
+#### 2
+
+The same output is generated, except the coefficients table will have more rows (for each predictor). Similar to simple linear regression, we can use this table to determine the regression equation/
+
+```{r}
+#| classes: .enlarge-image
+knitr::include_graphics("images/Chapter 4/10. MultipleReg-02.png")
+```
+:::
+
+## Summary
+
+In this chapter, we moved from describing single variables to modelling relationships between variables. We began by introducing covariance, which captures the direction in which two variables move together, and then developed this into correlation, a standardised measure that allows us to assess both the direction and strength of a linear relationship. Importantly, we emphasised that correlation alone does not establish causation—variables may move together because of a third unseen factor, or purely by coincidence.
+
+Building on this foundation, we introduced simple linear regression as a formal modelling framework. Regression enables us to estimate a line of best fit, quantify the change in an outcome for a change in a predictor, and make predictions based on observed patterns in the data. Throughout, we discussed how to interpret slopes, intercepts, fitted values, and residuals, and highlighted that regression still describes associations, not causal effects.
+
+Finally, we introduced the idea of multiple regression—a powerful extension that allows us to model outcomes using more than one predictor at a time. At this stage, we focused only on intuition and interpretation: understanding how each variable’s effect is estimated while holding the others constant and why this leads to better modelling and prediction. In the next two weeks, we will examine multiple regression in much greater detail, including model building, diagnostics, interactions, categorical predictors, and the assumptions required for reliable inference.
+
+## Exercises
+
+:::: callout-note
+## Question 1
+
+The simple regression model is given as follows:
+
+$$Y_i=\beta_0+\beta_1X_i+e_i$$
+
+“The estimates of the intercept and slope ($\beta_0$ and $\beta_1$) are obtained by minimising the sum of squared errors.” Give a simple intuitive explanation for what this statement means. It might help to draw a scatter diagram to make your explanation clear.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+Intuitively, the best fitting model to the data will be the model with the least amount of error. The error is the difference between the actual value of Y and the model’s predictions of Y. The errors are then squared so that large negative errors don’t cancel out large positive errors, giving the false impression of a well-fitted model. The total error in the model is measured using the sum of these squared errors for each observation. The sum of squared errors is then minimised in order to obtain values for the intercept and slope that provide the best fitting model.
+
+![](images/Chapter%204/06.Exercise-01.png)
+:::
+::::
+
+:::: callout-note
+## Question 2
+
+How is the correlation calculated from the covariance and how do they differ?
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+Correlation = $\frac{\text{covariance}}{sd(X)sd(Y)}$. Covariance can take any value (units depend on units of X and Y), but correlation is unitless, standardised to be between -1 and +1. So we can judge the strength of the correlation by how far from zero it is.
+:::
+::::
+
+:::: callout-note
+## Question 3
+
+When you use Excel to calculate the correlation of two variables, and one of them is constant for all values in the sample, the answer comes back as #DIV/0!. What does this value mean and based on how a correlation is calculated, explain intuitively why Excel was unable to calculate a correlation.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+If a variable is constant for all values, the SD is zero, so correlation tries to divide by zero. This is impossible, hence the error from Excel. This makes sense – correlation measures how much variation in one variable is related to variation in the other. If a variable is constant in the sample, we learn nothing about this variation, so cannot calculate a correlation.
+:::
+::::
+
+:::: callout-note
+## Question 4
+
+This question is based around annual CO2 emissions for countries around the world over many years. Of particular interest is how CO2 per capita (million of tonnes) and GDP per capita (\$) are related to each other. To investigate this we construct a scatter plot between these two variables for data from 2016. This is show below.
+
+<center>![](images/Chapter%204/06.Exercise-02.png)</center>
+
+a.  What does the scatter plot tell us about the relationship between GDP per capita and CO2 emissions per capita?
+b.  To understand the relationship between these two variables we estimated the following simple linear regression using data for 2016: $CO_2 \text{ per capita} =0.23607+0.00025 \times GDP \text{ per capita}$. Interpret the sign and magnitude of the coefficient on GDP per capita.
+c.  The correlation between GDP per capita and CO2 per capita is 0.7966. What is the range of possible values of the correlation coefficient, and what does this value of 0.7966 tell us?
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+a.  There is a pattern, seems to be a relationship.
+
+    -   It is positive, higher CO2 usually means higher GDP per capita.
+    -   It is roughly linear, so a linear model would work ok in modelling it.
+
+b.  Sign is positive, which means countries with higher GDP per capita have higher CO2 emissions per person. An extra \$1 of GDP per capita increase CO2 emissions per capita by 0.00025 million tonnes. A better interpretation might be: Increase of GDP per capita of \$1000 means increase in CO2 emissions of .25 million tonnes.
+
+c.  Correlation ranges from -1 to +1.
+
+    -   0.7966 means positive correlation, and a quite strong one as it is reasonably close to 1.
+    -   Not “very strong” though.
+:::
+::::
+
+:::: callout-note
+## Question 5
+
+Continuing from question 4, let us focus on a sample of data from 1990. We estimate a model with the following:
+
+-   Y variable: $CO_2$ emissions (millions of tonnes)
+-   X variables: (1) Population (millions) and (2) GDP per capita
+
+The results of the model across countries for 1990 is shown below:
+
+<center>![](images/Chapter%204/06.Exercise-03.png)</center>
+
+a.  Report and interpret the coefficient on Population.
+b.  Report and interpret the coefficient on GDP per capita.
+c.  It has been claimed that the increase in CO2 emissions can be stopped if we stopped population growth. Does your estimated model support that claim? Explain.
+d.  The intercept for the model is negative. Discuss what this means.
+e.  Consider a country with a population of 25 million and GDP per capita of 30,000. Write the formula to give the predicted level of CO2 emissions.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+a.  Comparing two countries with the same GDP per capita, but one has an extra million people, the model predicts the country with the higher population will have 4.116 million tonnes of CO2 emissions per year more than the other.
+b.  Comparing two countries with the same population, but one has an extra \$1 of GDP per capita, the model predicts the country with the higher GDP per capita will have 20, 301 tonnes of CO2 emissions per year more than the other.
+c.  No it doesn’t. Even if population is held constant, the model estimates show that increases in GDP per capita also will lead to increased emissions.
+d.  It is estimated that countries with no GDP and no people have negative emissions of 181 million tonnes pa. Clearly not realistic since no countries are like that.
+e.  Predicted CO2 = -180.7 + 4.116 \* 25 + .020\*30,000
+:::
+::::
+
+:::: callout-note
+## Question 6
+
+Let us now estimate the same regression model as previously (question 5) but using data for 2016. The results are show below.
+
+<center>![](images/Chapter%204/06.Exercise-04.png)</center>
+
+a.  This model, estimated on 2016 data, has a smaller coefficient on GDP per capita than the model estimated on 1990 data. What does this mean?
+
+b.  Two regressions have been estimated using the 2016 data for 161 countries. They have the same independent variables (Population, measured in millions of people, and GDP, measured in billions of dollars), but different dependent variables. The estimated equations are:
+
+    $$CO_2=-15.6 + 0.838Population + 0.281GDP$$ $$CO_2(per capita)=4.73 -0.016Population+0.0012GDP$$
+
+    Compare the estimates across the two equations, commenting on two things: (1) explain why it could make sense for the coefficient on Population to be negative in the second equation, and (2) explain why the coefficient of GDP is so much smaller in the second equation compared to the first.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+a.  It means an increase in GDP per capita in 2016 have a smaller effect on emissions than if the same increase took place in 1990. This suggests the world may be using better technologies, as more economic activity has a smaller effect on CO2 emissions than in 1990.
+b.  
+    (1) The second model accounts for the effect of increase in population by modelling CO2 per capita. Negative effect of population in that model tells us that countries with bigger populations have lower emissions per person, presumably they get ‘economies of scale’ in their economic activity and hence are more efficient, producing less emissions per person.
+    (2) The second model predicts CO2 per capita, so the estimated effect of a \$1 billion increase in GDP is .0012 per person. Model 1 measures the effect on total CO2 emissions. To be comparable, we have to take the second estimate and multiply by population to get total effect on emissions. So the coefficient in Model 2 ought to be much smaller.
+:::
+::::
+
+:::: callout-note
+## Question 7
+
+Download the file below and open it in Excel.
+
+```{r}
+library(downloadthis)
+download_file(
+  path = "data/Topic 4 Practice Exercises Data.xlsx",
+  button_label = "Test Scores",
+  button_type = 'success'
+)
+```
+
+a.  Produce a scatter plot of the two variables – Monthly Family Income per person (US\$) and Test Scores. Is the relationship positive or negative?
+b.  Estimate a Simple Linear Regression Model with Monthly Family Income per person (US\$) as the X variable, and Test Scores as the Y variable. Is the estimated slope coefficient consistent with your conclusion for part (a)?
+c.  Estimate a Multiple Linear Regression Model with age and Monthly Family Income per person as the X variables, and Test Scores as the Y variable. Interpret the $\beta$ coefficients for each variable.
+
+::: {.callout-important collapse="true"}
+## Click for Solutions
+
+a.  The two series appear to be slightly positively related (almost zero), in the sense that the Test Score tends to increase as the value of Monthly Family Income increases. In other words, the value of Y can be inferred from the knowledge of X
+b.  The slope coefficient on Monthly Family Income is 0.014 which is slightly positive. This supports our previous evaluation of the scatter plot that there is a slight positive relationship between Monthly Family Income and Test Scores.
+c.  
+    -   Every additional year of age decreases test score by 0.1619, when controlling for monthly family income.
+    -   Every additional dollar increase in monthly family income increases test score by 0.0133, when controlling for age.
+:::
+::::
