@@ -1049,13 +1049,13 @@ Similar to last time, let's use the `predict()` function on our two models with 
 ::: callout-note
 ### R Code
 
-```{r}
+```{r, echo=TRUE}
 predictions_lpm <- predict(timor_lpm, test)
 ```
 
 Note: By default, predict() returns fitted values on the log-odds scale. Setting `type = "response"` applies the anti-logit transformation, converting log-odds into probabilities between 0 and 1.
 
-```{r}
+```{r, echo=TRUE}
 predictions_logreg <- predict(timor_logreg, test, type = 'response')
 ```
 :::
