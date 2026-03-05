@@ -162,7 +162,8 @@ df_bias |>
 
 Read through the 2 case studies below to learn more about bias.
 
-::: {.callout-note collapse = "true"} \## Bias in Sampling: The Raymond Pearl Case Study
+::: {.callout-note collapse="true"} 
+## Bias in Sampling: The Raymond Pearl Case Study
 
 In 1929, Raymond Pearl of Johns Hopkins University set out to test the hypothesis:
 
@@ -206,7 +207,9 @@ Pearl’s study highlights how selection bias can make a false relationship appe
 
 :::
 
-::: {.callout-note collapse = "true"} \## Survivorship Bias: The Abraham Wald Case Study
+::: {.callout-note collapse="true"} 
+
+## Survivorship Bias: The Abraham Wald Case Study
 
 During World War II, the U.S. military faced a critical problem: many aircraft were being lost in combat, and they needed to strengthen the planes to improve their chances of returning safely. Engineers examined the bullet holes on planes that had returned from missions and noticed consistent patterns—certain parts of the aircraft were riddled with damage, while other areas appeared largely untouched. The initial recommendation was straightforward: reinforce the sections that showed the most bullet holes.
 
