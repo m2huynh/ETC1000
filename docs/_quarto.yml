@@ -54,6 +54,7 @@ format:
         - darkly
         #- custom.scss
     number-sections: true
+  pdf: default
 
 editor: visual
 
