@@ -1,0 +1,33 @@
+## Epilogue {.unnumbered}
+
+Well done for making it to the end of the unit!
+
+Statistics is not an easy subject. For many, it challenges the way you think, pushing you to balance logic, interpretation, and uncertainty all at once. The effort you have put into working through these ideas, grappling with difficult concepts, and learning to interpret results carefully is something to recognise. These are not trivial skills, and they take time and persistence to develop.
+
+If you found this unit interesting or rewarding, you may want to consider exploring other units offered by the Department of Econometrics and Business Statistics, as what you have seen here only begins to uncover what is possible with data.
+
+This book has provided a foundation, but it is only the beginning. In more advanced studies, you may encounter:
+
+- Nonlinear and complex models
+- Machine learning algorithms
+- Time series and forecasting
+- Causal inference and experimental design
+
+While these topics may seem more advanced, the core ideas you have developed in this unit will remain essential. The ability to think critically about data, question assumptions, interpret results clearly, and remain mindful of uncertainty will continue to guide you, no matter how far you go in your studies.
+
+Perhaps the most valuable takeaway from this unit is not a specific method, but a habit of mind. When you see a claim supported by data, pause and ask:
+
+> - *Where did the data come from*?
+> - *What assumptions were made*?
+> - *What uncertainty is involved*?
+> - *Are there alternative explanations*?
+
+In doing so, you move from being a passive consumer of information to an active, critical thinker. And that is what it truly means to think like a statistician.
+
+As you close this book, remember: statistics is not just something you learn — it is something you practice, refine, and carry with you into the world.
+
+<br>
+
+All the best,
+
+The ETC1000 Team
