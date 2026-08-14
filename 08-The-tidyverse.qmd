@@ -6,6 +6,7 @@ title: "The tidyverse"
 library(tidyverse)
 library(flextable)
 library(webexercises)
+library(sjPlot)
 ```
 
 ::: callout-note

@@ -2,17 +2,23 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.10.18">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
 <title>3&nbsp; Understanding uncertainty – ETC1000 2026</title>
 <style>
-code{white-space: pre-wrap;}
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -38,14 +44,14 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-2fef5ea3f8957b3e4ecc936fc74692ca.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-c27fdc8e5b00b532d2d5a75ada188648.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-b9e11ad5a37ead2aabff839d95ae3857.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-c27fdc8e5b00b532d2d5a75ada188648.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-f07248834697d125d844cdaf4174b45d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-a64f2b92d8b4b45ab5f5d9261e8b8c9d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-f07248834697d125d844cdaf4174b45d.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -81,7 +87,7 @@ ul.task-list li input[type="checkbox"] {
 
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
 
 <script type="text/javascript">
 const typesetMath = (el) => {
@@ -94,7 +100,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -385,6 +391,12 @@ window.Quarto = {
  <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistic Regression</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./epilogue.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Epilogue</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -462,7 +474,7 @@ window.Quarto = {
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Learning Objectives
+<span class="screen-reader-only">Note</span>Learning Objectives
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -494,12 +506,12 @@ Learning Objectives
 <h2 data-number="3.1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">3.1</span> Introduction</h2>
 <p>Suppose it’s the not too distant future. And you wake up to the following breaking news:</p>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Click to see breaking news
+<span class="screen-reader-only">Note</span>Click to see breaking news
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -541,12 +553,12 @@ Click to see breaking news
 <em>Why is this approach not possible?</em>
 </center>
 <div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Click to check your answer
+<span class="screen-reader-only">Important</span>Click to check your answer
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -568,7 +580,7 @@ Click to check your answer
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Is your sample reliable?
+<span class="screen-reader-only">Note</span>Is your sample reliable?
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -577,12 +589,12 @@ Is your sample reliable?
 <img src="images/Chapter 3/02. Inference3.png" class="img-fluid">
 </center>
 <div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Click to check your answer
+<span class="screen-reader-only">Important</span>Click to check your answer
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -625,17 +637,17 @@ Click to check your answer
 <p>There are manay different types of Selection bias, with a few examples being provided below.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-d3d1bf8c{}.cl-d3cb4f4e{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d3ce732c{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d3ce8876{width:1.653in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d3ce8877{width:7.003in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d3ce8880{width:1.653in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d3ce8881{width:7.003in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d3ce8882{width:1.653in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d3ce888a{width:7.003in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-d3d1bf8c"><thead><tr style="overflow-wrap:break-word;"><th class="cl-d3ce8876"><p class="cl-d3ce732c"><span class="cl-d3cb4f4e">Type</span></p></th><th class="cl-d3ce8877"><p class="cl-d3ce732c"><span class="cl-d3cb4f4e">Description</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-d3ce8880"><p class="cl-d3ce732c"><span class="cl-d3cb4f4e">Sampling bias</span></p></td><td class="cl-d3ce8881"><p class="cl-d3ce732c"><span class="cl-d3cb4f4e">Some member of the target population are less likely to be included than others.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d3ce8880"><p class="cl-d3ce732c"><span class="cl-d3cb4f4e">Attrition bias</span></p></td><td class="cl-d3ce8881"><p class="cl-d3ce732c"><span class="cl-d3cb4f4e">Participants who drop out of a study are different from the ones who remain.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d3ce8880"><p class="cl-d3ce732c"><span class="cl-d3cb4f4e">Volunteer bias</span></p></td><td class="cl-d3ce8881"><p class="cl-d3ce732c"><span class="cl-d3cb4f4e">Participants who choose to participate in studies are generally different to those who do not.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d3ce8880"><p class="cl-d3ce732c"><span class="cl-d3cb4f4e">Survivorship bias</span></p></td><td class="cl-d3ce8881"><p class="cl-d3ce732c"><span class="cl-d3cb4f4e">Successful observations are more likely to be represented than unsuccessful ones.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d3ce8880"><p class="cl-d3ce732c"><span class="cl-d3cb4f4e">Non-response bias</span></p></td><td class="cl-d3ce8881"><p class="cl-d3ce732c"><span class="cl-d3cb4f4e">Participants who refuse to participate or drop out of a study may be different to those who take part.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d3ce8882"><p class="cl-d3ce732c"><span class="cl-d3cb4f4e">Undercoverage bias</span></p></td><td class="cl-d3ce888a"><p class="cl-d3ce732c"><span class="cl-d3cb4f4e">Participants who are inadequately represented.</span></p></td></tr></tbody></table></div>
+<div class="tabwid"><style>.cl-3d05b558{}.cl-3cfc5828{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-3d0043e8{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3d00811e{width:1.653in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d008128{width:7.003in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d008132{width:1.653in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d008133{width:7.003in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d008134{width:1.653in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d008135{width:7.003in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-3d05b558"><thead><tr style="overflow-wrap:break-word;"><th class="cl-3d00811e"><p class="cl-3d0043e8"><span class="cl-3cfc5828">Type</span></p></th><th class="cl-3d008128"><p class="cl-3d0043e8"><span class="cl-3cfc5828">Description</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-3d008132"><p class="cl-3d0043e8"><span class="cl-3cfc5828">Sampling bias</span></p></td><td class="cl-3d008133"><p class="cl-3d0043e8"><span class="cl-3cfc5828">Some member of the target population are less likely to be included than others.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3d008132"><p class="cl-3d0043e8"><span class="cl-3cfc5828">Attrition bias</span></p></td><td class="cl-3d008133"><p class="cl-3d0043e8"><span class="cl-3cfc5828">Participants who drop out of a study are different from the ones who remain.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3d008132"><p class="cl-3d0043e8"><span class="cl-3cfc5828">Volunteer bias</span></p></td><td class="cl-3d008133"><p class="cl-3d0043e8"><span class="cl-3cfc5828">Participants who choose to participate in studies are generally different to those who do not.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3d008132"><p class="cl-3d0043e8"><span class="cl-3cfc5828">Survivorship bias</span></p></td><td class="cl-3d008133"><p class="cl-3d0043e8"><span class="cl-3cfc5828">Successful observations are more likely to be represented than unsuccessful ones.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3d008132"><p class="cl-3d0043e8"><span class="cl-3cfc5828">Non-response bias</span></p></td><td class="cl-3d008133"><p class="cl-3d0043e8"><span class="cl-3cfc5828">Participants who refuse to participate or drop out of a study may be different to those who take part.</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3d008134"><p class="cl-3d0043e8"><span class="cl-3cfc5828">Undercoverage bias</span></p></td><td class="cl-3d008135"><p class="cl-3d0043e8"><span class="cl-3cfc5828">Participants who are inadequately represented.</span></p></td></tr></tbody></table></div>
 </div>
 </div>
 <p>Read through the 2 case studies below to learn more about bias.</p>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Bias in Sampling: The Raymond Pearl Case Study
+<span class="screen-reader-only">Note</span>Bias in Sampling: The Raymond Pearl Case Study
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -648,12 +660,12 @@ Bias in Sampling: The Raymond Pearl Case Study
 <p>Using hospital records, he compared the rates of cancer among patients with and without tuberculosis and concluded that TB appeared to have a protective effect.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-d409b5f4{}.cl-d403b5d2{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d406509e{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d40650a8{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d40650b2{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d4066322{width:0.718in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4066323{width:0.778in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4066324{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d406632c{width:0.668in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d406632d{width:0.718in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d406632e{width:0.778in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4066336{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4066337{width:0.668in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4066338{width:0.718in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4066340{width:0.778in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4066341{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4066342{width:0.668in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-d409b5f4"><thead><tr style="overflow-wrap:break-word;"><th class="cl-d4066322"><p class="cl-d406509e"><span class="cl-d403b5d2">Status</span></p></th><th class="cl-d4066323"><p class="cl-d40650a8"><span class="cl-d403b5d2">Cancer</span></p></th><th class="cl-d4066324"><p class="cl-d40650a8"><span class="cl-d403b5d2">No_Cancer</span></p></th><th class="cl-d406632c"><p class="cl-d40650a8"><span class="cl-d403b5d2">Total</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-d406632d"><p class="cl-d406509e"><span class="cl-d403b5d2">TB</span></p></td><td class="cl-d406632e"><p class="cl-d40650b2"><span class="cl-d403b5d2">54</span></p></td><td class="cl-d4066336"><p class="cl-d40650b2"><span class="cl-d403b5d2">133</span></p></td><td class="cl-d4066337"><p class="cl-d40650b2"><span class="cl-d403b5d2">187</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4066338"><p class="cl-d406509e"><span class="cl-d403b5d2">No TB</span></p></td><td class="cl-d4066340"><p class="cl-d40650b2"><span class="cl-d403b5d2">762</span></p></td><td class="cl-d4066341"><p class="cl-d40650b2"><span class="cl-d403b5d2">683</span></p></td><td class="cl-d4066342"><p class="cl-d40650b2"><span class="cl-d403b5d2">1,445</span></p></td></tr></tbody></table></div>
+<div class="tabwid"><style>.cl-3d974554{}.cl-3d80cd60{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-3d89d414{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3d89d428{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3d89d429{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3d8a49c6{width:0.718in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d8a49da{width:0.778in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d8a49db{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d8a49dc{width:0.668in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d8a49e4{width:0.718in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d8a49e5{width:0.778in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d8a49ee{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d8a49f8{width:0.668in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d8a49f9{width:0.718in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d8a49fa{width:0.778in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d8a4a02{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3d8a4a03{width:0.668in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-3d974554"><thead><tr style="overflow-wrap:break-word;"><th class="cl-3d8a49c6"><p class="cl-3d89d414"><span class="cl-3d80cd60">Status</span></p></th><th class="cl-3d8a49da"><p class="cl-3d89d428"><span class="cl-3d80cd60">Cancer</span></p></th><th class="cl-3d8a49db"><p class="cl-3d89d428"><span class="cl-3d80cd60">No_Cancer</span></p></th><th class="cl-3d8a49dc"><p class="cl-3d89d428"><span class="cl-3d80cd60">Total</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-3d8a49e4"><p class="cl-3d89d414"><span class="cl-3d80cd60">TB</span></p></td><td class="cl-3d8a49e5"><p class="cl-3d89d429"><span class="cl-3d80cd60">54</span></p></td><td class="cl-3d8a49ee"><p class="cl-3d89d429"><span class="cl-3d80cd60">133</span></p></td><td class="cl-3d8a49f8"><p class="cl-3d89d429"><span class="cl-3d80cd60">187</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3d8a49f9"><p class="cl-3d89d414"><span class="cl-3d80cd60">No TB</span></p></td><td class="cl-3d8a49fa"><p class="cl-3d89d429"><span class="cl-3d80cd60">762</span></p></td><td class="cl-3d8a4a02"><p class="cl-3d89d429"><span class="cl-3d80cd60">683</span></p></td><td class="cl-3d8a4a03"><p class="cl-3d89d429"><span class="cl-3d80cd60">1,445</span></p></td></tr></tbody></table></div>
 </div>
 </div>
 <div class="cell">
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-d430223e{}.cl-d42a7a0a{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d42cf53c{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d42cf546{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d42cf550{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d42d07fc{width:0.718in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d42d0806{width:0.778in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d42d0807{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d42d0808{width:0.752in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d42d0810{width:0.718in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d42d0811{width:0.778in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d42d0812{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d42d081a{width:0.752in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d42d081b{width:0.718in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d42d081c{width:0.778in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d42d081d{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d42d081e{width:0.752in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-d430223e"><thead><tr style="overflow-wrap:break-word;"><th class="cl-d42d07fc"><p class="cl-d42cf53c"><span class="cl-d42a7a0a">Status</span></p></th><th class="cl-d42d0806"><p class="cl-d42cf546"><span class="cl-d42a7a0a">Cancer</span></p></th><th class="cl-d42d0807"><p class="cl-d42cf546"><span class="cl-d42a7a0a">No_Cancer</span></p></th><th class="cl-d42d0808"><p class="cl-d42cf546"><span class="cl-d42a7a0a">Total</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-d42d0810"><p class="cl-d42cf53c"><span class="cl-d42a7a0a">TB</span></p></td><td class="cl-d42d0811"><p class="cl-d42cf550"><span class="cl-d42a7a0a">0.0062</span></p></td><td class="cl-d42d0812"><p class="cl-d42cf550"><span class="cl-d42a7a0a">0.9338</span></p></td><td class="cl-d42d081a"><p class="cl-d42cf550"><span class="cl-d42a7a0a">0.1146</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d42d081b"><p class="cl-d42cf53c"><span class="cl-d42a7a0a">No TB</span></p></td><td class="cl-d42d081c"><p class="cl-d42cf550"><span class="cl-d42a7a0a">0.1630</span></p></td><td class="cl-d42d081d"><p class="cl-d42cf550"><span class="cl-d42a7a0a">0.8370</span></p></td><td class="cl-d42d081e"><p class="cl-d42cf550"><span class="cl-d42a7a0a">0.8854</span></p></td></tr></tbody></table></div>
+<div class="tabwid"><style>.cl-3e06bac4{}.cl-3df54b04{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-3dfbdfaa{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3dfbdfbe{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3dfbdfbf{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3dfc1e20{width:0.718in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3dfc1e2a{width:0.778in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3dfc1e34{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3dfc1e35{width:0.752in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3dfc1e3e{width:0.718in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3dfc1e3f{width:0.778in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3dfc1e52{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3dfc1e53{width:0.752in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3dfc1e5c{width:0.718in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3dfc1e5d{width:0.778in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3dfc1e66{width:1.058in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3dfc1e70{width:0.752in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-3e06bac4"><thead><tr style="overflow-wrap:break-word;"><th class="cl-3dfc1e20"><p class="cl-3dfbdfaa"><span class="cl-3df54b04">Status</span></p></th><th class="cl-3dfc1e2a"><p class="cl-3dfbdfbe"><span class="cl-3df54b04">Cancer</span></p></th><th class="cl-3dfc1e34"><p class="cl-3dfbdfbe"><span class="cl-3df54b04">No_Cancer</span></p></th><th class="cl-3dfc1e35"><p class="cl-3dfbdfbe"><span class="cl-3df54b04">Total</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-3dfc1e3e"><p class="cl-3dfbdfaa"><span class="cl-3df54b04">TB</span></p></td><td class="cl-3dfc1e3f"><p class="cl-3dfbdfbf"><span class="cl-3df54b04">0.0062</span></p></td><td class="cl-3dfc1e52"><p class="cl-3dfbdfbf"><span class="cl-3df54b04">0.9338</span></p></td><td class="cl-3dfc1e53"><p class="cl-3dfbdfbf"><span class="cl-3df54b04">0.1146</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3dfc1e5c"><p class="cl-3dfbdfaa"><span class="cl-3df54b04">No TB</span></p></td><td class="cl-3dfc1e5d"><p class="cl-3dfbdfbf"><span class="cl-3df54b04">0.1630</span></p></td><td class="cl-3dfc1e66"><p class="cl-3dfbdfbf"><span class="cl-3df54b04">0.8370</span></p></td><td class="cl-3dfc1e70"><p class="cl-3dfbdfbf"><span class="cl-3df54b04">0.8854</span></p></td></tr></tbody></table></div>
 </div>
 </div>
 <p>However, this finding was not the result of biology—it was the result of bias in the sampling process.</p>
@@ -665,12 +677,12 @@ Bias in Sampling: The Raymond Pearl Case Study
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Survivorship Bias: The Abraham Wald Case Study
+<span class="screen-reader-only">Note</span>Survivorship Bias: The Abraham Wald Case Study
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -867,12 +879,12 @@ SD(\bar{X}) = \frac{\sigma}{\sqrt{n}}
 E[\bar{X}] = \mu.
 \]</span></p>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Click for the mathematical proof
+<span class="screen-reader-only">Note</span>Click for the mathematical proof
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -909,12 +921,12 @@ s = \sqrt{\frac{1}{n-1} \sum_{i=1}^{n} (X_i - \bar{X})^2},
 s_n = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (X_i - \bar{X})^2}.
 \]</span></p>
 <div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Click for the mathematical proof
+<span class="screen-reader-only">Note</span>Click for the mathematical proof
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -1141,7 +1153,7 @@ There is a trade-off: higher confidence <span class="math inline">\(\Rightarrow\
 </div>
 </center>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">1</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">2</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">1</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">2</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <p>Switch to the <strong>Data</strong> tab and select <strong>Data Analysis</strong>. Select <strong>Descriptive Statistics</strong> and enter in the input range, select labels, output location, and make sure to select “summary statistics” and “confidence level.” By default the confidence level is set at 95%, and we can adjust this as needed.</p>
@@ -1185,18 +1197,18 @@ There is a trade-off: higher confidence <span class="math inline">\(\Rightarrow\
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Question 1
+<span class="screen-reader-only">Note</span>Question 1
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p>Explain briefly why voluntary participation is an unreliable way to collect a sample to be used for estimation.</p>
 <div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Click for Solutions
+<span class="screen-reader-only">Important</span>Click for Solutions
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -1214,18 +1226,18 @@ Click for Solutions
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Question 2
+<span class="screen-reader-only">Note</span>Question 2
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p>Explain the idea of a biased sample and a representative sample, and discuss whether this method of taking a sample is appropriate.</p>
 <div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Click for Solutions
+<span class="screen-reader-only">Important</span>Click for Solutions
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -1243,18 +1255,18 @@ Click for Solutions
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Question 3
+<span class="screen-reader-only">Note</span>Question 3
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p>If you wanted a 99% confidence interval instead of a 95% confidence interval, would it be wider or narrower? Explain your reasoning.</p>
 <div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Click for Solutions
+<span class="screen-reader-only">Important</span>Click for Solutions
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -1272,7 +1284,7 @@ Click for Solutions
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Question 4
+<span class="screen-reader-only">Note</span>Question 4
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1287,12 +1299,12 @@ Question 4
 <li>Imagine somehow that the population standard deviation was known instead of having to be estimated. What would change in the confidence interval formula, and would my interval be narrower or wider?</li>
 </ol>
 <div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Click for Solutions
+<span class="screen-reader-only">Important</span>Click for Solutions
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -1313,7 +1325,7 @@ Click for Solutions
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Question 5
+<span class="screen-reader-only">Note</span>Question 5
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1359,12 +1371,12 @@ Question 5
 <li>The Official Poverty Line for Timor-Leste is $57 per person per month. Is it valid to use a poverty rate calculated from this particular sample as an estimate of the poverty rate for the whole country? Explain your logic – think carefully about who the sample used in this study includes.</li>
 </ol>
 <div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-18-contents" aria-controls="callout-18" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Click for Solutions
+<span class="screen-reader-only">Important</span>Click for Solutions
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -1386,7 +1398,7 @@ Click for Solutions
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Question 6
+<span class="screen-reader-only">Note</span>Question 6
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1394,7 +1406,7 @@ Question 6
 <p>The following statistics relate to the heights of mothers of the children in the sample.</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="tabwid"><style>.cl-d4b3ba5e{}.cl-d4adb8b6{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-d4afe7b2{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d4afe7bc{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-d4affbd0{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4affbda{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4affbdb{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4affbdc{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4affbe4{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-d4affbe5{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-d4b3ba5e"><thead><tr style="overflow-wrap:break-word;"><th class="cl-d4affbd0"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Statistic</span></p></th><th class="cl-d4affbda"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">mum_height</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-d4affbdb"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Mean</span></p></td><td class="cl-d4affbdc"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">150.830400</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4affbdb"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Standard Error</span></p></td><td class="cl-d4affbdc"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">0.057403</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4affbdb"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Median</span></p></td><td class="cl-d4affbdc"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">150.650000</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4affbdb"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Mode</span></p></td><td class="cl-d4affbdc"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">149.500000</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4affbdb"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Standard Deviation</span></p></td><td class="cl-d4affbdc"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">5.390395</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4affbdb"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Sample Variance</span></p></td><td class="cl-d4affbdc"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">29.056360</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4affbdb"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Kurtosis</span></p></td><td class="cl-d4affbdc"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">1.741754</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4affbdb"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Skewness</span></p></td><td class="cl-d4affbdc"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">0.353652</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4affbdb"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Range</span></p></td><td class="cl-d4affbdc"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">74.399990</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4affbdb"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Minimum</span></p></td><td class="cl-d4affbdc"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">124.500000</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4affbdb"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Maximum</span></p></td><td class="cl-d4affbdc"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">198.900000</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4affbdb"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Sum</span></p></td><td class="cl-d4affbdc"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">1,330,022.000000</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4affbdb"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Count</span></p></td><td class="cl-d4affbdc"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">8,818.000000</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-d4affbe4"><p class="cl-d4afe7b2"><span class="cl-d4adb8b6">Confidence Level (95%)</span></p></td><td class="cl-d4affbe5"><p class="cl-d4afe7bc"><span class="cl-d4adb8b6">0.112524</span></p></td></tr></tbody></table></div>
+<div class="tabwid"><style>.cl-3f29cdce{}.cl-3f163890{font-family:'Arial';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-3f1d8366{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3f1d837a{margin:0;text-align:right;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-3f1df7c4{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f1df7d8{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f1df7d9{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f1df7e2{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f1df7ec{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-3f1df7f6{width:0.75in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-3f29cdce"><thead><tr style="overflow-wrap:break-word;"><th class="cl-3f1df7c4"><p class="cl-3f1d8366"><span class="cl-3f163890">Statistic</span></p></th><th class="cl-3f1df7d8"><p class="cl-3f1d837a"><span class="cl-3f163890">mum_height</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-3f1df7d9"><p class="cl-3f1d8366"><span class="cl-3f163890">Mean</span></p></td><td class="cl-3f1df7e2"><p class="cl-3f1d837a"><span class="cl-3f163890">150.830400</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f1df7d9"><p class="cl-3f1d8366"><span class="cl-3f163890">Standard Error</span></p></td><td class="cl-3f1df7e2"><p class="cl-3f1d837a"><span class="cl-3f163890">0.057403</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f1df7d9"><p class="cl-3f1d8366"><span class="cl-3f163890">Median</span></p></td><td class="cl-3f1df7e2"><p class="cl-3f1d837a"><span class="cl-3f163890">150.650000</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f1df7d9"><p class="cl-3f1d8366"><span class="cl-3f163890">Mode</span></p></td><td class="cl-3f1df7e2"><p class="cl-3f1d837a"><span class="cl-3f163890">149.500000</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f1df7d9"><p class="cl-3f1d8366"><span class="cl-3f163890">Standard Deviation</span></p></td><td class="cl-3f1df7e2"><p class="cl-3f1d837a"><span class="cl-3f163890">5.390395</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f1df7d9"><p class="cl-3f1d8366"><span class="cl-3f163890">Sample Variance</span></p></td><td class="cl-3f1df7e2"><p class="cl-3f1d837a"><span class="cl-3f163890">29.056360</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f1df7d9"><p class="cl-3f1d8366"><span class="cl-3f163890">Kurtosis</span></p></td><td class="cl-3f1df7e2"><p class="cl-3f1d837a"><span class="cl-3f163890">1.741754</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f1df7d9"><p class="cl-3f1d8366"><span class="cl-3f163890">Skewness</span></p></td><td class="cl-3f1df7e2"><p class="cl-3f1d837a"><span class="cl-3f163890">0.353652</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f1df7d9"><p class="cl-3f1d8366"><span class="cl-3f163890">Range</span></p></td><td class="cl-3f1df7e2"><p class="cl-3f1d837a"><span class="cl-3f163890">74.399990</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f1df7d9"><p class="cl-3f1d8366"><span class="cl-3f163890">Minimum</span></p></td><td class="cl-3f1df7e2"><p class="cl-3f1d837a"><span class="cl-3f163890">124.500000</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f1df7d9"><p class="cl-3f1d8366"><span class="cl-3f163890">Maximum</span></p></td><td class="cl-3f1df7e2"><p class="cl-3f1d837a"><span class="cl-3f163890">198.900000</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f1df7d9"><p class="cl-3f1d8366"><span class="cl-3f163890">Sum</span></p></td><td class="cl-3f1df7e2"><p class="cl-3f1d837a"><span class="cl-3f163890">1,330,022.000000</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f1df7d9"><p class="cl-3f1d8366"><span class="cl-3f163890">Count</span></p></td><td class="cl-3f1df7e2"><p class="cl-3f1d837a"><span class="cl-3f163890">8,818.000000</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-3f1df7ec"><p class="cl-3f1d8366"><span class="cl-3f163890">Confidence Level (95%)</span></p></td><td class="cl-3f1df7f6"><p class="cl-3f1d837a"><span class="cl-3f163890">0.112524</span></p></td></tr></tbody></table></div>
 </div>
 </div>
 <p>The formula for confidence intervals for the mean is given here:</p>
@@ -1405,12 +1417,12 @@ Question 6
 \]</span></p>
 <p>Use this output to construct a 95% confidence interval for the average height of mothers of young children, and give a technical interpretation of this interval, based on the theory of repeated samples. Also refer to the formula for confidence intervals to explain why this interval is very narrow in this case.</p>
 <div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-20-contents" aria-controls="callout-20" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Click for Solutions
+<span class="screen-reader-only">Important</span>Click for Solutions
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -1430,7 +1442,7 @@ Click for Solutions
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Question 7
+<span class="screen-reader-only">Note</span>Question 7
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -1440,12 +1452,12 @@ Question 7
 <li>Also, think of some ‘bad’ (i.e.&nbsp;non-random) ways of taking a sample.</li>
 </ol>
 <div class="callout callout-style-default callout-important callout-titled">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Click for Solutions
+<span class="screen-reader-only">Important</span>Click for Solutions
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -1744,13 +1756,14 @@ window.onload = function() {
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy
