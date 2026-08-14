@@ -812,7 +812,7 @@ $$Pr(A∩B)=Pr(A)\times Pr(B)$$
 
 **Define A and B**
 
--   Let A: Undergraduate
+-   Let A: Heart Disease
 -   Let B: Minimal exercise
 
 **Obtain probabilities**
@@ -858,7 +858,7 @@ d.  Apply the conditional probability rule to test whether having an undergradua
 
 a.  Column-wise
 
-b.  29.1% of the sample are male and completed year 12
+b.  P(Completed Year 12 | Male) = 29.1%
 
 c.  18.6%
 
